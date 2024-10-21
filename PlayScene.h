@@ -21,19 +21,23 @@ public:
 private:
 	//ゲームのフェーズ
 	enum class Phase {
-		kMovePlayerGirlTop, //女の子が上で動く
-		kMovePlayerBoyTop, //男の子が上で動く
-		kMovePlayerGirlBottom, //女の子が下で動く
-		kMovePlayerBoyBottom, //男の子が下で動く
-		kMoveAll, //どっちも動く
+		dice, //すごろく
+		miniGame, //ミニゲーム
+		boss, // ボス
 	};
+
+	// キー入力結果を受け取る箱
+	char keys[256] = { 0 };
+	char preKeys[256] = { 0 };
 
 	Fade* fade_ = nullptr;
 
 	Player* player_ = nullptr;
 
 	//現在のフェーズ
-	Phase phase = Phase::kMovePlayerGirlTop;
+	Phase phase = Phase::dice;
+
+	int dice = 0;
 
 	float kWindowHeight = 720.0f;
 	float kWindowWidth = 1280.0f;

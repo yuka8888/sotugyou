@@ -4,7 +4,7 @@ void Player::Initialize()
 {
 }
 
-void Player::Update()
+void Player::dicePhaseUpdate()
 {
 	Move();
 	translation_ = translation_ + velocity_;
@@ -28,4 +28,9 @@ void Player::Move()
 		direction_ = Direction::kRight;
 		velocity_.x = 2.0f;
 	}
+
+	if (translation_.y <= kGround_) {
+		isGround_ = true;
+	}
+
 }

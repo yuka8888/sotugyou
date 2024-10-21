@@ -1,4 +1,4 @@
-#include "PlayScene.h"
+﻿#include "PlayScene.h"
 
 PlayScene::PlayScene()
 {
@@ -23,11 +23,27 @@ void PlayScene::Initialize()
 
 void PlayScene::Update()
 {
+	// キー入力を受け取る
+	memcpy(preKeys, keys, 256);
+	Novice::GetHitKeyStateAll(keys);
+
 	fade_->Update();
 
-	player_->Update();
+	switch (phase) {
+		case Phase::dice:
+			player_->dicePhaseUpdate();
 
-	if (Novice::CheckHitKey(DIK_SPACE) && !(fade_->GetStatus() == Fade::Status::FadeOut)) {
+			if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
+				dice = rand() % 6 + 1;
+			}
+			break;
+		case Phase::miniGame:
+			break;
+		case Phase::boss:
+			break;
+	}
+
+	if (Novice::CheckHitKey(DIK_SPACE) && fade_->IsFinished() && !(fade_->GetStatus() == Fade::Status::FadeOut)) {
 		fade_->Start(Fade::Status::FadeOut, 1.0f);
 	}
 

@@ -18,7 +18,7 @@ void TitleScene::Update()
 {
 	fade_->Update();
 
-	if (Novice::CheckHitKey(DIK_SPACE) && !(fade_->GetStatus() == Fade::Status::FadeOut)) {
+	if (Novice::CheckHitKey(DIK_SPACE) && fade_->IsFinished() && !(fade_->GetStatus() == Fade::Status::FadeOut)) {
 		fade_->Start(Fade::Status::FadeOut, 1.0f);
 	}
 
