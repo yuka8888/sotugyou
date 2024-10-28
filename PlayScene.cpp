@@ -19,6 +19,25 @@ void PlayScene::Initialize()
 
 	player_ = new Player;
 	player_->Initialize();
+
+	mapChipManager_ = new MapChipManager;
+
+	switch (phase_)
+	{
+		case PlayScene::Phase::dice:
+			mapChipManager_->LoadMapChipCsv("Resources/map.csv");
+			break;
+		case PlayScene::Phase::miniGame:
+			break;
+		case PlayScene::Phase::boss:
+			break;
+		default:
+			break;
+	}
+
+	//すごろくのマスの大きさ
+	kBlockHeight = kWindowHeight / mapChipManager_->GetNumBlockVirtical();
+	kBlockWidth = kBlockHeight;
 }
 
 void PlayScene::Update()
@@ -29,7 +48,7 @@ void PlayScene::Update()
 
 	fade_->Update();
 
-	switch (phase) {
+	switch (phase_) {
 		case Phase::dice:
 			player_->dicePhaseUpdate();
 
@@ -55,6 +74,43 @@ void PlayScene::Update()
 
 void PlayScene::Draw()
 {
+	DrawMap();
+
 	player_->Draw();
 	fade_->Draw();
+
+}
+
+void PlayScene::DrawMap()
+{
+	// 要素数
+	uint32_t numBlockVirtical = mapChipManager_->GetNumBlockVirtical();
+	uint32_t numBlockHorizonal = mapChipManager_->GetNumBlockHorizontal();
+
+	for (uint32_t i = 0; i < numBlockVirtical; i++) {
+		for (uint32_t j = 0; j < numBlockHorizonal; j++) {
+
+
+			switch (mapChipManager_->GetMapChipDate().data[i][j]) {
+				case MapChipType::kBlank:
+					break;
+
+				case MapChipType::kShooting:
+					Novice::DrawBox(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), int(kBlockWidth), int(kBlockHeight), 0.0f, BLUE, kFillModeSolid);
+					break;
+
+				case MapChipType::kAitem:
+					Novice::DrawBox(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), int(kBlockWidth), int(kBlockHeight), 0.0f, RED, kFillModeSolid);
+					break;
+
+				case MapChipType::kNone:
+					Novice::DrawBox(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), int(kBlockWidth), int(kBlockHeight), 0.0f, WHITE, kFillModeSolid);
+					break;
+
+			}
+
+		}
+	}
+
+
 }

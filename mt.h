@@ -6,16 +6,9 @@
 
 enum class MapChipType {
 	kBlank,//空白
-	kGround_,//地面
-	kBlockTop, //ブロック
-	kBlockBottom, //ブロック
-	kKey, //鍵
-	kGoal, //ゴール
-	kFall, //穴
-	kMagicCircle, //上下入れ替えの魔法陣
-	kWallTop, //壁
-	kWallBottom, //壁
-	kSwitch, //スイッチ
+	kShooting,//シューティングゲーム
+	kAitem, //アイテムもらえる
+	kNone, //特になし
 };
 
 enum Corner {

@@ -3,7 +3,7 @@
 #include "Novice.h"
 #include "Fade.h"
 #include "Player.h"
-
+#include "MapChipManager.h"
 
 class PlayScene :public IScene
 {
@@ -35,12 +35,19 @@ private:
 	Player* player_ = nullptr;
 
 	//現在のフェーズ
-	Phase phase = Phase::dice;
+	Phase phase_ = Phase::dice;
+
+	MapChipManager* mapChipManager_ = nullptr;
 
 	int dice = 0;
 
 	float kWindowHeight = 720.0f;
 	float kWindowWidth = 1280.0f;
 
+	//すごろくのマスの大きさ
+	float kBlockWidth = 0;
+	float kBlockHeight = 0;
+
+	void DrawMap();
 
 };
