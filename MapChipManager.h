@@ -56,9 +56,9 @@ public:
 
 private:
 	//幅
-	static inline const float kBlockWidth_ = 48.0f;
+	float kBlockWidth_ = 48.0f;
 	//高さ
-	static inline const float kBlockHeight_ = 48.0f;
+	float kBlockHeight_ = 48.0f;
 
 	//縦の要素数
 	static inline const uint32_t kNumBlockVirtical_ = 10;
@@ -79,5 +79,8 @@ private:
 
 	float kWindowHeight = 720.0f;
 	float kWindowWidth = 1280.0f;
+
+	//スタートの座標
+	Vector2 startPosition_ = {};
 
 };

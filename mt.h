@@ -9,6 +9,8 @@ enum class MapChipType {
 	kShooting,//シューティングゲーム
 	kAitem, //アイテムもらえる
 	kNone, //特になし
+	kStart, //スタート
+	kGoal, //ゴール
 };
 
 enum Corner {

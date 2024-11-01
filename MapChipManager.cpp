@@ -9,6 +9,8 @@ namespace {
 		{"1", MapChipType::kShooting},
 		{"2", MapChipType::kAitem},
 		{"3", MapChipType::kNone},
+		{"4", MapChipType::kStart},
+		{"5", MapChipType::kGoal},
 	};
 }
 
@@ -39,6 +41,11 @@ void MapChipManager::LoadMapChipCsv(const std::string& filePath) {
 
 	std::string line;
 
+	//すごろくのマスの大きさ
+	kBlockHeight_ = kWindowHeight / kNumBlockVirtical_;
+	kBlockWidth_ = kBlockHeight_;
+
+
 	// CSVからマップチップデータを読み込む
 	for (uint32_t i = 0; i < kNumBlockVirtical_; ++i) {
 
@@ -54,7 +61,14 @@ void MapChipManager::LoadMapChipCsv(const std::string& filePath) {
 
 			if (mapChipTable.contains(word)) {
 				mapChipData_.data[(i - kNumBlockVirtical_ + 1) * -1][j] = mapChipTable[word];
+
+				//スタートの場所を取得
+				if (mapChipTable[word] == MapChipType::kStart) {
+					startPosition_ = { j * kBlockWidth_ , (kNumBlockVirtical_ - i - 1) * kBlockHeight_ };
+				}
 			}
+
+
 		}
 	}
 }
