@@ -63,6 +63,9 @@ struct Block {
 enum Direction {
 	kRight,
 	kLeft,
+	kUp,
+	kDown,
+	kNone,
 };
 
 

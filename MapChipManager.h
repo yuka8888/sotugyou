@@ -53,6 +53,8 @@ public:
 
 	IndexSet GetMapChipIndexSetByPosition(const Vector2& position);
 
+	Vector2 GetStartPosition();
+
 
 private:
 	//幅

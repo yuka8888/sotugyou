@@ -4,6 +4,7 @@
 #include "Fade.h"
 #include "Player.h"
 #include "MapChipManager.h"
+#include "time.h"
 
 class PlayScene :public IScene
 {
@@ -30,6 +31,10 @@ private:
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
 
+	//画面サイズ
+	float kWindowHeight = 720.0f;
+	float kWindowWidth = 1280.0f;
+
 	Fade* fade_ = nullptr;
 
 	Player* player_ = nullptr;
@@ -39,15 +44,32 @@ private:
 
 	MapChipManager* mapChipManager_ = nullptr;
 
-	int dice = 0;
+	//すごろく関連
+	//進める道の個数
+	uint32_t pathsNum_ = 0;
 
-	float kWindowHeight = 720.0f;
-	float kWindowWidth = 1280.0f;
+	//進める場所の記録
+	Direction paths_[4] = {};
+
+	//残り進める数
+	uint32_t dice_ = 0;
 
 	//すごろくのマスの大きさ
 	float kBlockWidth = 0;
 	float kBlockHeight = 0;
 
+	//道を選んでいるときか
+	bool isChoicePaths_ = false;
+
+	unsigned int currentTime;
+
+	//関数
+	//マップを描画
 	void DrawMap();
+
+	/// <summary>
+	/// サイコロを振る
+	/// </summary>
+	void RollTheDice();
 
 };

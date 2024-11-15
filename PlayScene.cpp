@@ -11,6 +11,8 @@ PlayScene::~PlayScene()
 
 void PlayScene::Initialize()
 {
+	currentTime = (unsigned int)time(nullptr);
+	srand(currentTime);
 
 	fade_ = new Fade();
 	fade_->Initialize();
@@ -25,7 +27,11 @@ void PlayScene::Initialize()
 	switch (phase_)
 	{
 		case PlayScene::Phase::dice:
+			//マップの取得
 			mapChipManager_->LoadMapChipCsv("Resources/map.csv");
+			//playerの初期位置の取得
+			player_->SetTranslation(mapChipManager_->GetStartPosition());
+
 			break;
 		case PlayScene::Phase::miniGame:
 			break;
@@ -34,6 +40,8 @@ void PlayScene::Initialize()
 		default:
 			break;
 	}
+
+	player_->SetMapChipManager(mapChipManager_);
 
 	//すごろくのマスの大きさ
 	kBlockHeight = kWindowHeight / mapChipManager_->GetNumBlockVirtical();
@@ -52,9 +60,9 @@ void PlayScene::Update()
 		case Phase::dice:
 			player_->dicePhaseUpdate();
 
-			if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
-				dice = rand() % 6 + 1;
-			}
+			//サイコロをふる
+			RollTheDice();
+
 			break;
 		case Phase::miniGame:
 			break;
@@ -96,7 +104,7 @@ void PlayScene::DrawMap()
 					break;
 
 				case MapChipType::kShooting:
-					Novice::DrawBox(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), int(kBlockWidth), int(kBlockHeight), 0.0f, BLUE, kFillModeSolid);
+					Novice::DrawBox(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), int(kBlockWidth), int(kBlockHeight), 0.0f, BLACK, kFillModeSolid);
 					break;
 
 				case MapChipType::kAitem:
@@ -112,5 +120,95 @@ void PlayScene::DrawMap()
 		}
 	}
 
+
+}
+
+void PlayScene::RollTheDice()
+{
+	if (!isChoicePaths_) {
+		//Aキーでサイコロを振る
+		if (keys[DIK_A] && !preKeys[DIK_A]) {
+			dice_ = rand() % 6 + 1;
+		}
+
+		//サイコロの値が1より大きい時
+		if (dice_ > 0) {
+			//上下左でどこに進めるのか調べる
+			if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex, (player_->GetMapChipPosition().yIndex - 10 - 1) * -1) != MapChipType::kBlank) {
+				paths_[pathsNum_] = Direction::kDown;
+				pathsNum_++;
+			}
+			if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex, (player_->GetMapChipPosition().yIndex - 10 + 1) * -1) != MapChipType::kBlank) {
+				paths_[pathsNum_] = Direction::kUp;
+				pathsNum_++;
+			}
+			if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex + 1, (player_->GetMapChipPosition().yIndex - 10) * -1) != MapChipType::kBlank) {
+				paths_[pathsNum_] = Direction::kRight;
+				pathsNum_++;
+			}
+
+			//進める場所が一つなら移動させる
+			if (pathsNum_ == 1) {
+				player_->SetPaths(paths_[0]);
+				dice_--;
+
+				//初期化
+				for (uint32_t i = 0; i < pathsNum_; i++) {
+					paths_[i] = {};
+				}
+				pathsNum_ = 0;
+			}
+			else {
+				//複数あるときは選ばせる
+				isChoicePaths_ = true;
+			}
+
+		}
+	}
+	//道を選び中
+	else {
+		for (uint32_t i = 0; i < pathsNum_; i++) {
+			if (paths_[i] == Direction::kDown && keys[DIK_DOWNARROW]) {
+				player_->SetPaths(paths_[i]);
+
+				dice_--;
+
+				//初期化
+				for (uint32_t j = 0; j < pathsNum_; j++) {
+					paths_[j] = {};
+				}
+				pathsNum_ = 0;
+				isChoicePaths_ = false;
+
+			}
+			else if (paths_[i] == Direction::kUp && keys[DIK_UPARROW]) {
+				player_->SetPaths(paths_[i]);
+
+				dice_--;
+
+				//初期化
+				for (uint32_t j = 0; j < pathsNum_; j++) {
+					paths_[j] = {};
+				}
+				pathsNum_ = 0;
+				isChoicePaths_ = false;
+
+			}
+			else if (paths_[i] == Direction::kRight && keys[DIK_RIGHTARROW]) {
+				player_->SetPaths(paths_[i]);
+
+				dice_--;
+
+				//初期化
+				for (uint32_t j = 0; j < pathsNum_; j++) {
+					paths_[j] = {};
+				}
+				pathsNum_ = 0;
+				isChoicePaths_ = false;
+
+			}
+		}
+	}
+	//サイコロの値プレイヤーが移動する
 
 }

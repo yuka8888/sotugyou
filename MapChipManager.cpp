@@ -64,7 +64,7 @@ void MapChipManager::LoadMapChipCsv(const std::string& filePath) {
 
 				//スタートの場所を取得
 				if (mapChipTable[word] == MapChipType::kStart) {
-					startPosition_ = { j * kBlockWidth_ , (kNumBlockVirtical_ - i - 1) * kBlockHeight_ };
+					startPosition_ = GetMapChipPositionByIndex(j, i) - Vector2{-kBlockWidth_ / 2.0f, -kBlockHeight_ / 2.0f};
 				}
 			}
 
@@ -146,9 +146,14 @@ Vector2 MapChipManager::GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yInd
 
 IndexSet MapChipManager::GetMapChipIndexSetByPosition(const Vector2& position) {
 	IndexSet indexSet = {};
-	indexSet.xIndex = uint32_t((position.x + kBlockWidth_ / 2) / kBlockWidth_);
+	indexSet.xIndex = uint32_t((position.x) / kBlockWidth_);
 	float ypos = (position.y + kBlockHeight_ / 2.0f);
 	float yIndex = (ypos / kBlockHeight_);
 	indexSet.yIndex = uint32_t(yIndex);
 	return indexSet;
+}
+
+Vector2 MapChipManager::GetStartPosition()
+{
+	return startPosition_;
 }
