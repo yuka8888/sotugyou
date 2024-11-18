@@ -27,6 +27,26 @@ void Player::dicePhaseUpdate()
 	}
 }
 
+void Player::ActionGameUpdate()
+{
+	// キー入力を受け取る
+	memcpy(preKeys, keys, 256);
+	Novice::GetHitKeyStateAll(keys);
+
+	if (keys[DIK_A]) {
+		velocity_ = {-2.0f, 0.0f};
+	}
+	else if (keys[DIK_W]) {
+		velocity_ = { 0, -2.0f };
+	}
+	else if (keys[DIK_D]) {
+		velocity_ = { 2.0f, 0.0f };
+	}
+	else if (keys[DIK_S]) {
+		velocity_ = { 0, 2.0f };
+	}
+}
+
 void Player::Draw()
 {
 	Novice::DrawBox(int(translation_.x - kWidth_ / 2.0f), int(translation_.y - kHeight_ / 2.0f), (int)kWidth_, (int)kHeight_, 0.0f, BLUE, kFillModeSolid);

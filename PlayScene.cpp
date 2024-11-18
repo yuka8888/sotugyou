@@ -70,6 +70,9 @@ void PlayScene::Update()
 			break;
 	}
 
+	//フェーズの切り替え
+	ChangePhase();
+
 	if (Novice::CheckHitKey(DIK_SPACE) && fade_->IsFinished() && !(fade_->GetStatus() == Fade::Status::FadeOut)) {
 		fade_->Start(Fade::Status::FadeOut, 1.0f);
 	}
@@ -82,9 +85,18 @@ void PlayScene::Update()
 
 void PlayScene::Draw()
 {
-	DrawMap();
+	switch (phase_) {
+		case Phase::dice:
+			DrawMap();
+			player_->Draw();
+			break;
+		case Phase::miniGame:
+			ActionGamePhaseDraw();
+			break;
+		case Phase::boss:
+			break;
+	}
 
-	player_->Draw();
 	fade_->Draw();
 
 }
@@ -103,7 +115,7 @@ void PlayScene::DrawMap()
 				case MapChipType::kBlank:
 					break;
 
-				case MapChipType::kShooting:
+				case MapChipType::kminiGame:
 					Novice::DrawBox(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), int(kBlockWidth), int(kBlockHeight), 0.0f, BLACK, kFillModeSolid);
 					break;
 
@@ -129,22 +141,35 @@ void PlayScene::RollTheDice()
 		//Aキーでサイコロを振る
 		if (keys[DIK_A] && !preKeys[DIK_A]) {
 			dice_ = rand() % 6 + 1;
+			isRollDice = true;
 		}
 
 		//サイコロの値が1より大きい時
 		if (dice_ > 0) {
-			//上下右でどこに進めるのか調べる
-			if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex, (player_->GetMapChipPosition().yIndex - 10 - 1) * -1) != MapChipType::kBlank) {
-				paths_[pathsNum_] = Direction::kDown;
-				pathsNum_++;
-			}
+			//上下左右でどこに進めるのか調べる
 			if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex, (player_->GetMapChipPosition().yIndex - 10 + 1) * -1) != MapChipType::kBlank) {
-				paths_[pathsNum_] = Direction::kUp;
-				pathsNum_++;
+				if (prePaths_ != Direction::kUp) {
+					paths_[pathsNum_] = Direction::kDown;
+					pathsNum_++;
+				}
+			}
+			if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex, (player_->GetMapChipPosition().yIndex - 10 - 1) * -1) != MapChipType::kBlank) {
+				if (prePaths_ != Direction::kDown) {
+					paths_[pathsNum_] = Direction::kUp;
+					pathsNum_++;
+				}
 			}
 			if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex + 1, (player_->GetMapChipPosition().yIndex - 10) * -1) != MapChipType::kBlank) {
-				paths_[pathsNum_] = Direction::kRight;
-				pathsNum_++;
+				if (prePaths_ != Direction::kLeft) {
+					paths_[pathsNum_] = Direction::kRight;
+					pathsNum_++;
+				}
+			}
+			if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex + 1, (player_->GetMapChipPosition().yIndex - 10) * -1) != MapChipType::kBlank) {
+				if (prePaths_ != Direction::kRight) {
+					paths_[pathsNum_] = Direction::kLeft;
+					pathsNum_++;
+				}
 			}
 
 			//進める場所が一つなら移動させる
@@ -172,6 +197,7 @@ void PlayScene::RollTheDice()
 				player_->SetPaths(paths_[i]);
 
 				dice_--;
+				prePaths_ = paths_[i];
 
 				//初期化
 				for (uint32_t j = 0; j < pathsNum_; j++) {
@@ -185,6 +211,7 @@ void PlayScene::RollTheDice()
 				player_->SetPaths(paths_[i]);
 
 				dice_--;
+				prePaths_ = paths_[i];
 
 				//初期化
 				for (uint32_t j = 0; j < pathsNum_; j++) {
@@ -198,6 +225,21 @@ void PlayScene::RollTheDice()
 				player_->SetPaths(paths_[i]);
 
 				dice_--;
+				prePaths_ = paths_[i];
+
+				//初期化
+				for (uint32_t j = 0; j < pathsNum_; j++) {
+					paths_[j] = {};
+				}
+				pathsNum_ = 0;
+				isChoicePaths_ = false;
+
+			}
+			else if (paths_[i] == Direction::kLeft && keys[DIK_LEFTARROW]) {
+				player_->SetPaths(paths_[i]);
+
+				dice_--;
+				prePaths_ = paths_[i];
 
 				//初期化
 				for (uint32_t j = 0; j < pathsNum_; j++) {
@@ -211,4 +253,27 @@ void PlayScene::RollTheDice()
 	}
 	//サイコロの値プレイヤーが移動する
 
+}
+
+void PlayScene::ChangePhase()
+{
+	//フェーズをみにげーむに切り替え
+	if (dice_ == 0 && isRollDice) {
+		if (sugorokuTimer < 1.0f) {
+			sugorokuTimer += 0.03f;
+		}
+		else {
+			phase_ = Phase::miniGame;
+		}
+	}
+}
+
+void PlayScene::ActionGamePhase()
+{
+
+}
+
+void PlayScene::ActionGamePhaseDraw()
+{
+	Novice::DrawBox(0, kGroundPosition, (int)kWindowWidth, 200, 0.0f, GREEN, kFillModeSolid);
 }

@@ -6,7 +6,7 @@
 namespace {
 	std::map<std::string, MapChipType> mapChipTable = {
 		{"0", MapChipType::kBlank},
-		{"1", MapChipType::kShooting},
+		{"1", MapChipType::kminiGame},
 		{"2", MapChipType::kAitem},
 		{"3", MapChipType::kNone},
 		{"4", MapChipType::kStart},

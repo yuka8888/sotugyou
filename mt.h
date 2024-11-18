@@ -6,7 +6,7 @@
 
 enum class MapChipType {
 	kBlank,//空白
-	kShooting,//シューティングゲーム
+	kminiGame,//ミニゲーム
 	kAitem, //アイテムもらえる
 	kNone, //特になし
 	kStart, //スタート
@@ -73,6 +73,11 @@ struct IndexSet {
 	int xIndex;
 	int yIndex;
 };
+
+static int kGroundPosition = 600;
+
+static float kWindowWidth = 1280.0f;
+static float kWindowHeight = 720.0f;
 
 Vector2 operator+(Vector2 num1, Vector2 num2);
 

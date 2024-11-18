@@ -51,8 +51,14 @@ private:
 	//進める場所の記録
 	Direction paths_[4] = {};
 
+	//前回進んだ方向
+	Direction prePaths_ = Direction::kRight;
+
 	//残り進める数
 	uint32_t dice_ = 0;
+
+	//すごろくで使うタイマー
+	float sugorokuTimer = 0.0f;
 
 	//すごろくのマスの大きさ
 	float kBlockWidth = 0;
@@ -61,7 +67,12 @@ private:
 	//道を選んでいるときか
 	bool isChoicePaths_ = false;
 
+	//サイコロを振っているか
+	bool isRollDice = false;
+
 	unsigned int currentTime;
+
+	//アクションゲーム関連
 
 	//関数
 	//マップを描画
@@ -72,4 +83,18 @@ private:
 	/// </summary>
 	void RollTheDice();
 
+	/// <summary>
+	/// フェースの切り替え
+	/// </summary>
+	void ChangePhase();
+
+	/// <summary>
+	/// アクションゲーム
+	/// </summary>
+	void ActionGamePhase();
+
+	/// <summary>
+	/// アクションゲームの描画
+	/// </summary>
+	void ActionGamePhaseDraw();
 };

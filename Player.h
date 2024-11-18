@@ -11,6 +11,8 @@ public:
 
 	void dicePhaseUpdate();
 
+	void ActionGameUpdate();
+
 	void Draw();
 
 	void SetTranslation(Vector2 translation);
@@ -24,6 +26,10 @@ public:
 	void SetMapChipManager(MapChipManager* mapChipManager);
 
 private:
+	// キー入力結果を受け取る箱
+	char keys[256] = { 0 };
+	char preKeys[256] = { 0 };
+
 	MapChipManager* mapChipManager_ = nullptr;
 
 	Vector2 translation_ = { 100.0f, 100.0f };
@@ -50,6 +56,9 @@ private:
 	//サイコロの目
 	int dice_ = 0;
 
+	//アクションゲーム関連
+	//ジャンプしているか
+	bool isJump = false;
 
 	/// <summary>
 	/// 移動
