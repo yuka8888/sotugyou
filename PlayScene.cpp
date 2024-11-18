@@ -133,7 +133,7 @@ void PlayScene::RollTheDice()
 
 		//サイコロの値が1より大きい時
 		if (dice_ > 0) {
-			//上下左でどこに進めるのか調べる
+			//上下右でどこに進めるのか調べる
 			if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex, (player_->GetMapChipPosition().yIndex - 10 - 1) * -1) != MapChipType::kBlank) {
 				paths_[pathsNum_] = Direction::kDown;
 				pathsNum_++;
