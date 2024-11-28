@@ -2,11 +2,11 @@
 
 PlayScene::PlayScene()
 {
-	delete fade_;
 }
 
 PlayScene::~PlayScene()
 {
+	delete fade_;
 }
 
 void PlayScene::Initialize()
@@ -23,6 +23,8 @@ void PlayScene::Initialize()
 	player_->Initialize();
 
 	mapChipManager_ = new MapChipManager;
+
+	actionGame_ = new ActionGame;
 
 	switch (phase_)
 	{
@@ -46,6 +48,7 @@ void PlayScene::Initialize()
 	//すごろくのマスの大きさ
 	kBlockHeight = kWindowHeight / mapChipManager_->GetNumBlockVirtical();
 	kBlockWidth = kBlockHeight;
+
 }
 
 void PlayScene::Update()
@@ -65,6 +68,12 @@ void PlayScene::Update()
 
 			break;
 		case Phase::miniGame:
+			actionGame_->Update();
+
+			if (actionGame_->IsClear()) {
+				phase_ = Phase::dice;
+			}
+
 			break;
 		case Phase::boss:
 			break;
@@ -91,7 +100,8 @@ void PlayScene::Draw()
 			player_->Draw();
 			break;
 		case Phase::miniGame:
-			ActionGamePhaseDraw();
+			actionGame_->Draw();
+
 			break;
 		case Phase::boss:
 			break;
@@ -264,16 +274,8 @@ void PlayScene::ChangePhase()
 		}
 		else {
 			phase_ = Phase::miniGame;
+			actionGame_->Initialize();
+			isRollDice = false;
 		}
 	}
-}
-
-void PlayScene::ActionGamePhase()
-{
-
-}
-
-void PlayScene::ActionGamePhaseDraw()
-{
-	Novice::DrawBox(0, kGroundPosition, (int)kWindowWidth, 200, 0.0f, GREEN, kFillModeSolid);
 }

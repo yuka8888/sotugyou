@@ -33,18 +33,10 @@ void Player::ActionGameUpdate()
 	memcpy(preKeys, keys, 256);
 	Novice::GetHitKeyStateAll(keys);
 
-	if (keys[DIK_A]) {
-		velocity_ = {-2.0f, 0.0f};
-	}
-	else if (keys[DIK_W]) {
-		velocity_ = { 0, -2.0f };
-	}
-	else if (keys[DIK_D]) {
-		velocity_ = { 2.0f, 0.0f };
-	}
-	else if (keys[DIK_S]) {
-		velocity_ = { 0, 2.0f };
-	}
+	Move();
+
+	aabb_.max = { translation_.x + kWidth_ / 2.0f, translation_.y + kHeight_ / 2.0f };
+	aabb_.min = { translation_.x - kWidth_ / 2.0f, translation_.y - kHeight_ / 2.0f };
 }
 
 void Player::Draw()
@@ -79,22 +71,48 @@ void Player::SetMapChipManager(MapChipManager* mapChipManager)
 	mapChipManager_ = mapChipManager;
 }
 
+AABB Player::GetAABB()
+{
+	return aabb_;
+}
+
 
 void Player::Move()
 {
 	velocity_ = {};
 
+	//移動
 	if (Novice::CheckHitKey(DIK_A) || Novice::CheckHitKey(DIK_LEFTARROW)) {
 		direction_ = Direction::kLeft;
-		velocity_.x = -2.0f;
+		velocity_.x = -5.0f;
 	}
 	else if (Novice::CheckHitKey(DIK_D) || Novice::CheckHitKey(DIK_RIGHTARROW)) {
 		direction_ = Direction::kRight;
-		velocity_.x = 2.0f;
+		velocity_.x = 5.0f;
 	}
 
-	if (translation_.y <= kGround_) {
+	//スペースキーでジャンプ
+	if (isGround_ && (keys[DIK_W] || keys[DIK_UPARROW])) {
+		isJump = true;
+		isGround_ = false;
+		acceleration_.y = -10.0f;
+	}
+
+	//ジャンプしていたら
+	if (!isGround_) {
+		acceleration_.y += 0.5f;
+	}
+
+
+	velocity_ = velocity_ + acceleration_;
+
+	translation_ = translation_ + velocity_;
+
+	if (translation_.y > kGround_) {
 		isGround_ = true;
+		isJump = false;
+		acceleration_ = {};
+		translation_.y = kGround_;
 	}
 
 }

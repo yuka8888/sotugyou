@@ -25,6 +25,8 @@ public:
 
 	void SetMapChipManager(MapChipManager* mapChipManager);
 
+	AABB GetAABB();
+
 private:
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
@@ -36,11 +38,13 @@ private:
 
 	Vector2 velocity_ = {};
 
-	Vector2 acceleration = { 0, 5.0f };
+	Vector2 acceleration_ = {};
+
+	AABB aabb_;
 
 	float kGround_ = 600.0f;
 
-	bool isGround_ = false;
+	bool isGround_ = true;
 
 	Direction direction_ = Direction::kLeft;
 

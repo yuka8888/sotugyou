@@ -4,6 +4,7 @@
 #include "Fade.h"
 #include "Player.h"
 #include "MapChipManager.h"
+#include "ActionGame.h"
 #include "time.h"
 
 class PlayScene :public IScene
@@ -39,6 +40,8 @@ private:
 
 	Player* player_ = nullptr;
 
+	ActionGame* actionGame_ = nullptr;
+
 	//現在のフェーズ
 	Phase phase_ = Phase::dice;
 
@@ -72,7 +75,7 @@ private:
 
 	unsigned int currentTime;
 
-	//アクションゲーム関連
+	bool isMiniGameClear = false;
 
 	//関数
 	//マップを描画
@@ -88,13 +91,4 @@ private:
 	/// </summary>
 	void ChangePhase();
 
-	/// <summary>
-	/// アクションゲーム
-	/// </summary>
-	void ActionGamePhase();
-
-	/// <summary>
-	/// アクションゲームの描画
-	/// </summary>
-	void ActionGamePhaseDraw();
 };
