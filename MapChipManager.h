@@ -36,14 +36,7 @@ public:
 
 	MapChipData GetMapChipDate();
 
-	uint32_t GetBlockTopNum();
-	uint32_t GetBlockBottomNum();
-
-	uint32_t GetFallNum();
-
 	Vector2 GetBlockSize();
-
-	uint32_t GetWallNum();
 
 	MapChipType GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex);
 
@@ -54,6 +47,10 @@ public:
 	IndexSet GetMapChipIndexSetByPosition(const Vector2& position);
 
 	Vector2 GetStartPosition();
+
+	uint32_t GetKNumBlockVirtical_();
+
+	uint32_t GetKNumBlockHorizontal_();
 
 
 private:
@@ -66,16 +63,6 @@ private:
 	static inline const uint32_t kNumBlockVirtical_ = 10;
 	//横の要素数
 	static inline const uint32_t kNumBlockHorizontal_ = 10;
-
-	//ブロックの個数
-	uint32_t kBlockTopNum_ = 0;
-	uint32_t kBlockBottomNum_ = 0;
-
-	//ブロックの個数
-	uint32_t kFallNum_ = 0;
-
-	//壁の個数
-	uint32_t kWallNum_ = 0;
 
 	MapChipData mapChipData_;
 

@@ -54,6 +54,15 @@ private:
 
 	float kHeight_ = 36.0f;
 
+	//攻撃力
+	float attack_ = 1.0f;
+
+	//防御力
+	float defense_ = 1.0f;
+
+	//HP
+	float hp_ = 5.0f;
+
 	//プレイヤーのマップチップでの座標
 	IndexSet mapChipPosition_;
 

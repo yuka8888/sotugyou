@@ -70,8 +70,15 @@ void PlayScene::Update()
 		case Phase::miniGame:
 			actionGame_->Update();
 
-			if (actionGame_->IsClear()) {
+			//ミニゲームをクリアしたか
+			if (actionGame_->IsClear() && fade_->GetStatus() != Fade::Status::FadeOut) {
+				fade_->Start(Fade::Status::FadeOut, 1.0f);
+			}
+			else if (fade_->GetStatus() == Fade::Status::FadeOut && fade_->IsFinished()) {
 				phase_ = Phase::dice;
+				delete actionGame_;
+				actionGame_ = new ActionGame;
+				fade_->Start(Fade::Status::FadeIn, 1.0f);
 			}
 
 			break;
@@ -85,8 +92,13 @@ void PlayScene::Update()
 	if (Novice::CheckHitKey(DIK_SPACE) && fade_->IsFinished() && !(fade_->GetStatus() == Fade::Status::FadeOut)) {
 		fade_->Start(Fade::Status::FadeOut, 1.0f);
 	}
+	
+	if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex, player_->GetMapChipPosition().yIndex) == MapChipType::kGoal && !(fade_->GetStatus() == Fade::Status::FadeOut)) {
+		fade_->Start(Fade::Status::FadeOut, 1.0f);
+		isGoal = true;
+	}
 
-	if ((fade_->GetStatus() == Fade::Status::FadeOut) && (fade_->IsFinished() == true)) {
+	if (isGoal == true && (fade_->GetStatus() == Fade::Status::FadeOut) && (fade_->IsFinished() == true)) {
 		sceneNo = kClear;
 	}
 
@@ -157,25 +169,25 @@ void PlayScene::RollTheDice()
 		//サイコロの値が1より大きい時
 		if (dice_ > 0) {
 			//上下左右でどこに進めるのか調べる
-			if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex, (player_->GetMapChipPosition().yIndex - 10 + 1) * -1) != MapChipType::kBlank) {
-				if (prePaths_ != Direction::kUp) {
-					paths_[pathsNum_] = Direction::kDown;
-					pathsNum_++;
-				}
-			}
-			if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex, (player_->GetMapChipPosition().yIndex - 10 - 1) * -1) != MapChipType::kBlank) {
+			if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex, player_->GetMapChipPosition().yIndex + 1) != MapChipType::kBlank) {
 				if (prePaths_ != Direction::kDown) {
 					paths_[pathsNum_] = Direction::kUp;
 					pathsNum_++;
 				}
 			}
-			if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex + 1, (player_->GetMapChipPosition().yIndex - 10) * -1) != MapChipType::kBlank) {
+			if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex, player_->GetMapChipPosition().yIndex - 1) != MapChipType::kBlank) {
+				if (prePaths_ != Direction::kUp) {
+					paths_[pathsNum_] = Direction::kDown;
+					pathsNum_++;
+				}
+			}
+			if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex + 1, player_->GetMapChipPosition().yIndex) != MapChipType::kBlank) {
 				if (prePaths_ != Direction::kLeft) {
 					paths_[pathsNum_] = Direction::kRight;
 					pathsNum_++;
 				}
 			}
-			if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex + 1, (player_->GetMapChipPosition().yIndex - 10) * -1) != MapChipType::kBlank) {
+			if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex + 1, player_->GetMapChipPosition().yIndex) != MapChipType::kBlank) {
 				if (prePaths_ != Direction::kRight) {
 					paths_[pathsNum_] = Direction::kLeft;
 					pathsNum_++;
@@ -268,14 +280,19 @@ void PlayScene::RollTheDice()
 void PlayScene::ChangePhase()
 {
 	//フェーズをみにげーむに切り替え
-	if (dice_ == 0 && isRollDice) {
+	if (dice_ == 0 && isRollDice && mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex, player_->GetMapChipPosition().yIndex) == MapChipType::kminiGame) {
 		if (sugorokuTimer < 1.0f) {
 			sugorokuTimer += 0.03f;
 		}
-		else {
+		else if(fade_->GetStatus() != Fade::Status::FadeOut) {
+			fade_->Start(Fade::Status::FadeOut, 1.0f);
+		}
+		else if (fade_->IsFinished()) {
+			fade_->Start(Fade::Status::FadeIn, 1.0f);
 			phase_ = Phase::miniGame;
 			actionGame_->Initialize();
 			isRollDice = false;
+
 		}
 	}
 }

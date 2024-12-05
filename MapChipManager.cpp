@@ -90,29 +90,10 @@ MapChipData MapChipManager::GetMapChipDate()
 	return mapChipData_;
 }
 
-uint32_t MapChipManager::GetBlockTopNum()
-{
-	return kBlockTopNum_;
-}
-
-uint32_t MapChipManager::GetBlockBottomNum()
-{
-	return kBlockBottomNum_;
-}
-
-uint32_t MapChipManager::GetFallNum()
-{
-	return kFallNum_;
-}
 
 Vector2 MapChipManager::GetBlockSize()
 {
 	return { kBlockWidth_, kBlockHeight_ };
-}
-
-uint32_t MapChipManager::GetWallNum()
-{
-	return kWallNum_;
 }
 
 MapChipType MapChipManager::GetMapChipTypeByIndex(uint32_t xIndex, uint32_t yIndex) {
@@ -147,13 +128,23 @@ Vector2 MapChipManager::GetMapChipPositionByIndex(uint32_t xIndex, uint32_t yInd
 IndexSet MapChipManager::GetMapChipIndexSetByPosition(const Vector2& position) {
 	IndexSet indexSet = {};
 	indexSet.xIndex = uint32_t((position.x) / kBlockWidth_);
-	float ypos = (position.y + kBlockHeight_ / 2.0f);
+	float ypos = (position.y);
 	float yIndex = (ypos / kBlockHeight_);
-	indexSet.yIndex = uint32_t(yIndex);
+	indexSet.yIndex = uint32_t((yIndex - kNumBlockVirtical_) * -1);
 	return indexSet;
 }
 
 Vector2 MapChipManager::GetStartPosition()
 {
 	return startPosition_;
+}
+
+uint32_t MapChipManager::GetKNumBlockVirtical_()
+{
+	return kNumBlockVirtical_;
+}
+
+uint32_t MapChipManager::GetKNumBlockHorizontal_()
+{
+	return kNumBlockHorizontal_;
 }

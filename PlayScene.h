@@ -75,7 +75,7 @@ private:
 
 	unsigned int currentTime;
 
-	bool isMiniGameClear = false;
+	bool isGoal = false;
 
 	//関数
 	//マップを描画
