@@ -118,7 +118,7 @@ void PlayScene::Draw()
 		case Phase::boss:
 			break;
 	}
-
+	Novice::ScreenPrintf(0, 0, "%d", fade_->IsFinished());
 	fade_->Draw();
 
 }
@@ -161,7 +161,7 @@ void PlayScene::RollTheDice()
 {
 	if (!isChoicePaths_) {
 		//Aキーでサイコロを振る
-		if (keys[DIK_A] && !preKeys[DIK_A]) {
+		if (keys[DIK_A] && !preKeys[DIK_A] && (fade_->IsFinished() == true)) {
 			dice_ = rand() % 6 + 1;
 			isRollDice = true;
 		}
