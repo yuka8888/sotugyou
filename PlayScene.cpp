@@ -16,6 +16,8 @@ void PlayScene::Initialize()
 	goalBlockTexture_ = Novice::LoadTexture("./Resources/goal.png");
 	noneBlockTexture_ = Novice::LoadTexture("./Resources/blank.png");
 	puzzleBlockTexture_ = Novice::LoadTexture("./Resources/puzzle.png");
+	rouletteTexture_ = Novice::LoadTexture("./Resources/roulette.png");
+	backGroundTexture_ = Novice::LoadTexture("./Resources/background.png");
 
 	currentTime = (unsigned int)time(nullptr);
 	srand(currentTime);
@@ -98,7 +100,7 @@ void PlayScene::Update()
 	if (Novice::CheckHitKey(DIK_SPACE) && fade_->IsFinished() && !(fade_->GetStatus() == Fade::Status::FadeOut)) {
 		fade_->Start(Fade::Status::FadeOut, 1.0f);
 	}
-	
+
 	if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex, player_->GetMapChipPosition().yIndex) == MapChipType::kGoal && !(fade_->GetStatus() == Fade::Status::FadeOut)) {
 		fade_->Start(Fade::Status::FadeOut, 1.0f);
 		isGoal = true;
@@ -112,8 +114,11 @@ void PlayScene::Update()
 
 void PlayScene::Draw()
 {
+
 	switch (phase_) {
 		case Phase::dice:
+			//背景
+			Novice::DrawSprite(0, 0, backGroundTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 			DrawMap();
 			player_->Draw();
 			break;
@@ -124,7 +129,9 @@ void PlayScene::Draw()
 		case Phase::boss:
 			break;
 	}
-	Novice::ScreenPrintf(0, 0, "%d", fade_->IsFinished());
+
+	Novice::DrawSprite(100, 550, rouletteTexture_, 1.0f, 1.0f, 0.0f, WHITE);
+
 	fade_->Draw();
 
 }
@@ -144,7 +151,7 @@ void PlayScene::DrawMap()
 					break;
 
 				case MapChipType::kminiGame:
-					Novice::DrawSprite(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), puzzleBlockTexture_, 1.5f, 1.5f, 0.0f, WHITE);
+					Novice::DrawSprite(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), puzzleBlockTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 					break;
 
 				case MapChipType::kAitem:
@@ -152,15 +159,15 @@ void PlayScene::DrawMap()
 					break;
 
 				case MapChipType::kNone:
-					Novice::DrawSprite(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), noneBlockTexture_, 1.5f, 1.5f, 0.0f, WHITE);
+					Novice::DrawSprite(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), noneBlockTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 					break;
 
 				case MapChipType::kStart:
-					Novice::DrawSprite(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), startBlockTexture_, 1.5f, 1.5f, 0.0f, WHITE);
+					Novice::DrawSprite(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), startBlockTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 					break;
 
 				case MapChipType::kGoal:
-					Novice::DrawSprite(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), goalBlockTexture_, 1.5f, 1.5f, 0.0f, WHITE);
+					Novice::DrawSprite(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), goalBlockTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 					break;
 
 			}
@@ -298,7 +305,7 @@ void PlayScene::ChangePhase()
 		if (sugorokuTimer < 1.0f) {
 			sugorokuTimer += 0.03f;
 		}
-		else if(fade_->GetStatus() != Fade::Status::FadeOut) {
+		else if (fade_->GetStatus() != Fade::Status::FadeOut) {
 			fade_->Start(Fade::Status::FadeOut, 1.0f);
 		}
 		else if (fade_->IsFinished()) {

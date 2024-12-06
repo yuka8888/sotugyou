@@ -83,6 +83,9 @@ private:
 	int noneBlockTexture_;
 	int puzzleBlockTexture_;
 
+	int rouletteTexture_;
+	int backGroundTexture_;
+
 	//関数
 	//マップを描画
 	void DrawMap();

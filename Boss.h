@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "mt.h"
 #include "Novice.h"
 
@@ -14,7 +14,11 @@ public:
 	void Update();
 
 private:
+	//攻撃しているか
 	bool isAttack = false;
+
+	//体力
+	int hp = 100;
 
 	static const int kWaveNum = 10;
 

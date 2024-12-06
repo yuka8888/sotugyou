@@ -63,7 +63,7 @@ private:
 	//縦の要素数
 	static inline const uint32_t kNumBlockVirtical_ = 10;
 	//横の要素数
-	static inline const uint32_t kNumBlockHorizontal_ = 15;
+	static inline const uint32_t kNumBlockHorizontal_ = 20;
 
 	MapChipData mapChipData_;
 

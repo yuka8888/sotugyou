@@ -43,6 +43,11 @@ void Player::Draw()
 {
 	Novice::DrawBox(int(translation_.x - kWidth_ / 2.0f), int(translation_.y - kHeight_ / 2.0f), (int)kWidth_, (int)kHeight_, 0.0f, BLUE, kFillModeSolid);
 
+	ImGui::Begin("Player");
+	ImGui::DragInt("Attack", &attack_, 1);
+	ImGui::DragInt("Defense", &defense_, 1);
+	ImGui::DragInt("hp", &hp_, 1);
+	ImGui::End();
 }
 
 void Player::SetTranslation(Vector2 translation)
@@ -74,6 +79,36 @@ void Player::SetMapChipManager(MapChipManager* mapChipManager)
 AABB Player::GetAABB()
 {
 	return aabb_;
+}
+
+void Player::SetAttack(int attack)
+{
+	attack_ = attack;
+}
+
+void Player::SetHp(int hp)
+{
+	hp_ = hp;
+}
+
+void Player::SetDefense(int defense)
+{
+	defense_ = defense;
+}
+
+int Player::GetAttack()
+{
+	return attack_;
+}
+
+int Player::GetHp()
+{
+	return hp_;
+}
+
+int Player::GetDefense()
+{
+	return defense_;
 }
 
 

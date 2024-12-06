@@ -27,6 +27,18 @@ public:
 
 	AABB GetAABB();
 
+	void SetAttack(int attack);
+
+	void SetHp(int hp);
+
+	void SetDefense(int defense);
+
+	int GetAttack();
+
+	int GetHp();
+
+	int GetDefense();
+
 private:
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
@@ -54,14 +66,15 @@ private:
 
 	float kHeight_ = 36.0f;
 
+	//ボス戦で使うステータス
 	//攻撃力
-	float attack_ = 1.0f;
+	int attack_ = 1;
 
 	//防御力
-	float defense_ = 1.0f;
+	int defense_ = 1;
 
 	//HP
-	float hp_ = 5.0f;
+	int hp_ = 5;
 
 	//プレイヤーのマップチップでの座標
 	IndexSet mapChipPosition_;
