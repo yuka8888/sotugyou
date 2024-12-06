@@ -11,6 +11,12 @@ PlayScene::~PlayScene()
 
 void PlayScene::Initialize()
 {
+	//テクスチャの読み込み
+	startBlockTexture_ = Novice::LoadTexture("./Resources/start.png");
+	goalBlockTexture_ = Novice::LoadTexture("./Resources/goal.png");
+	noneBlockTexture_ = Novice::LoadTexture("./Resources/blank.png");
+	puzzleBlockTexture_ = Novice::LoadTexture("./Resources/puzzle.png");
+
 	currentTime = (unsigned int)time(nullptr);
 	srand(currentTime);
 
@@ -46,8 +52,8 @@ void PlayScene::Initialize()
 	player_->SetMapChipManager(mapChipManager_);
 
 	//すごろくのマスの大きさ
-	kBlockHeight = kWindowHeight / mapChipManager_->GetNumBlockVirtical();
-	kBlockWidth = kBlockHeight;
+	kBlockHeight = mapChipManager_->GetBlockSize().y;
+	kBlockWidth = mapChipManager_->GetBlockSize().x;
 
 }
 
@@ -138,7 +144,7 @@ void PlayScene::DrawMap()
 					break;
 
 				case MapChipType::kminiGame:
-					Novice::DrawBox(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), int(kBlockWidth), int(kBlockHeight), 0.0f, BLACK, kFillModeSolid);
+					Novice::DrawSprite(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), puzzleBlockTexture_, 1.5f, 1.5f, 0.0f, WHITE);
 					break;
 
 				case MapChipType::kAitem:
@@ -146,7 +152,15 @@ void PlayScene::DrawMap()
 					break;
 
 				case MapChipType::kNone:
-					Novice::DrawBox(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), int(kBlockWidth), int(kBlockHeight), 0.0f, WHITE, kFillModeSolid);
+					Novice::DrawSprite(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), noneBlockTexture_, 1.5f, 1.5f, 0.0f, WHITE);
+					break;
+
+				case MapChipType::kStart:
+					Novice::DrawSprite(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), startBlockTexture_, 1.5f, 1.5f, 0.0f, WHITE);
+					break;
+
+				case MapChipType::kGoal:
+					Novice::DrawSprite(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), goalBlockTexture_, 1.5f, 1.5f, 0.0f, WHITE);
 					break;
 
 			}

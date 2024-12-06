@@ -56,14 +56,14 @@ public:
 
 private:
 	//幅
-	float kBlockWidth_ = 48.0f;
+	float kBlockWidth_ = 64.0f;
 	//高さ
-	float kBlockHeight_ = 48.0f;
+	float kBlockHeight_ = 64.0f;
 
 	//縦の要素数
 	static inline const uint32_t kNumBlockVirtical_ = 10;
 	//横の要素数
-	static inline const uint32_t kNumBlockHorizontal_ = 10;
+	static inline const uint32_t kNumBlockHorizontal_ = 15;
 
 	MapChipData mapChipData_;
 

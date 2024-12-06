@@ -74,6 +74,33 @@ struct IndexSet {
 	int yIndex;
 };
 
+struct Size {
+	int w;
+	int h;
+};
+
+struct Attack {
+	Size size;
+	float leftX;
+	float rightX;
+	float topY;
+	float bottomY;
+	float topscsY;
+	float bottomscsY;
+	float spd;
+	int timer;
+	float t1;
+	float t2;
+	int maxTime;
+	float maxHeight;
+	int scale_h;
+	int oriScale;
+	//FLAG
+	int isAtk;
+	bool isPre;
+};
+
+
 static int kGroundPosition = 600;
 
 static float kWindowWidth = 1280.0f;

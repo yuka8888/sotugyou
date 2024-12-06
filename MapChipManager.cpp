@@ -41,11 +41,6 @@ void MapChipManager::LoadMapChipCsv(const std::string& filePath) {
 
 	std::string line;
 
-	//すごろくのマスの大きさ
-	kBlockHeight_ = kWindowHeight / kNumBlockVirtical_;
-	kBlockWidth_ = kBlockHeight_;
-
-
 	// CSVからマップチップデータを読み込む
 	for (uint32_t i = 0; i < kNumBlockVirtical_; ++i) {
 

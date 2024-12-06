@@ -77,6 +77,12 @@ private:
 
 	bool isGoal = false;
 
+	//テクスチャ
+	int startBlockTexture_;
+	int goalBlockTexture_;
+	int noneBlockTexture_;
+	int puzzleBlockTexture_;
+
 	//関数
 	//マップを描画
 	void DrawMap();
