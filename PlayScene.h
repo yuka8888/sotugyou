@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "MapChipManager.h"
 #include "ActionGame.h"
+#include "BossScene.h"
 #include "time.h"
 
 class PlayScene :public IScene
@@ -27,6 +28,8 @@ private:
 		miniGame, //ミニゲーム
 		boss, // ボス
 	};
+
+	BossScene* bossScene_;
 
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };

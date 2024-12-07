@@ -33,6 +33,10 @@ void PlayScene::Initialize()
 	mapChipManager_ = new MapChipManager;
 
 	actionGame_ = new ActionGame;
+	actionGame_->Initialize();
+
+	bossScene_ = new BossScene;
+	bossScene_->Initialize();
 
 	switch (phase_)
 	{
@@ -46,6 +50,7 @@ void PlayScene::Initialize()
 		case PlayScene::Phase::miniGame:
 			break;
 		case PlayScene::Phase::boss:
+
 			break;
 		default:
 			break;
@@ -78,37 +83,15 @@ void PlayScene::Update()
 		case Phase::miniGame:
 			actionGame_->Update();
 
-			//ミニゲームをクリアしたか
-			if (actionGame_->IsClear() && fade_->GetStatus() != Fade::Status::FadeOut) {
-				fade_->Start(Fade::Status::FadeOut, 1.0f);
-			}
-			else if (fade_->GetStatus() == Fade::Status::FadeOut && fade_->IsFinished()) {
-				phase_ = Phase::dice;
-				delete actionGame_;
-				actionGame_ = new ActionGame;
-				fade_->Start(Fade::Status::FadeIn, 1.0f);
-			}
-
 			break;
 		case Phase::boss:
+			bossScene_->Update();
 			break;
 	}
 
 	//フェーズの切り替え
 	ChangePhase();
 
-	if (Novice::CheckHitKey(DIK_SPACE) && fade_->IsFinished() && !(fade_->GetStatus() == Fade::Status::FadeOut)) {
-		fade_->Start(Fade::Status::FadeOut, 1.0f);
-	}
-
-	if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex, player_->GetMapChipPosition().yIndex) == MapChipType::kGoal && !(fade_->GetStatus() == Fade::Status::FadeOut)) {
-		fade_->Start(Fade::Status::FadeOut, 1.0f);
-		isGoal = true;
-	}
-
-	if (isGoal == true && (fade_->GetStatus() == Fade::Status::FadeOut) && (fade_->IsFinished() == true)) {
-		sceneNo = kClear;
-	}
 
 }
 
@@ -121,16 +104,18 @@ void PlayScene::Draw()
 			Novice::DrawSprite(0, 0, backGroundTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 			DrawMap();
 			player_->Draw();
+			Novice::DrawSprite(100, 550, rouletteTexture_, 1.0f, 1.0f, 0.0f, WHITE);
+
 			break;
 		case Phase::miniGame:
 			actionGame_->Draw();
 
 			break;
 		case Phase::boss:
+			bossScene_->Draw();
 			break;
 	}
 
-	Novice::DrawSprite(100, 550, rouletteTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 
 	fade_->Draw();
 
@@ -300,20 +285,56 @@ void PlayScene::RollTheDice()
 
 void PlayScene::ChangePhase()
 {
-	//フェーズをみにげーむに切り替え
-	if (dice_ == 0 && isRollDice && mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex, player_->GetMapChipPosition().yIndex) == MapChipType::kminiGame) {
-		if (sugorokuTimer < 1.0f) {
-			sugorokuTimer += 0.03f;
-		}
-		else if (fade_->GetStatus() != Fade::Status::FadeOut) {
-			fade_->Start(Fade::Status::FadeOut, 1.0f);
-		}
-		else if (fade_->IsFinished()) {
-			fade_->Start(Fade::Status::FadeIn, 1.0f);
-			phase_ = Phase::miniGame;
-			actionGame_->Initialize();
-			isRollDice = false;
+	switch (phase_)
+	{
+		case PlayScene::Phase::dice:
+			//フェーズをみにげーむに切り替え
+			if (dice_ == 0 && isRollDice && mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex, player_->GetMapChipPosition().yIndex) == MapChipType::kminiGame) {
+				if (sugorokuTimer < 1.0f) {
+					sugorokuTimer += 0.03f;
+				}
+				else if (fade_->GetStatus() != Fade::Status::FadeOut) {
+					fade_->Start(Fade::Status::FadeOut, 1.0f);
+				}
+				else if (fade_->IsFinished()) {
+					fade_->Start(Fade::Status::FadeIn, 1.0f);
+					phase_ = Phase::miniGame;
+					actionGame_->Initialize();
+					isRollDice = false;
 
-		}
+				}
+			}
+			//ゴールしたのでボス戦に切り替え
+			if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex, player_->GetMapChipPosition().yIndex) == MapChipType::kGoal && !(fade_->GetStatus() == Fade::Status::FadeOut)) {
+				fade_->Start(Fade::Status::FadeOut, 1.0f);
+				isGoal = true;
+			}
+			if (isGoal == true && (fade_->GetStatus() == Fade::Status::FadeOut) && (fade_->IsFinished() == true)) {
+				phase_ = Phase::boss;
+				fade_->Start(Fade::Status::FadeIn, 1.0f);
+			}
+
+			break;
+		case PlayScene::Phase::miniGame:
+			//ミニゲームをクリアしたか
+			if (actionGame_->IsClear() && fade_->GetStatus() != Fade::Status::FadeOut) {
+				fade_->Start(Fade::Status::FadeOut, 1.0f);
+			}
+			else if (fade_->GetStatus() == Fade::Status::FadeOut && fade_->IsFinished()) {
+				phase_ = Phase::dice;
+				delete actionGame_;
+				actionGame_ = new ActionGame;
+				fade_->Start(Fade::Status::FadeIn, 1.0f);
+			}
+
+
+			break;
+		case PlayScene::Phase::boss:
+			break;
+		default:
+			break;
+
 	}
+
+
 }

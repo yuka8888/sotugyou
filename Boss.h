@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "mt.h"
 #include "Novice.h"
+#include "time.h"
 
 class Boss
 {
@@ -13,19 +14,37 @@ public:
 
 	void Update();
 
+	void Draw();
+
+	void SetGround(float kGround);
+
+
 private:
+
+	const float kWidth_ = 32.0f;
+
+	const float kHeight_ = 64.0f;
+
 	//攻撃しているか
-	bool isAttack = false;
+	bool isAttack_ = false;
 
 	//体力
-	int hp = 100;
+	int hp_ = 100;
 
-	static const int kWaveNum = 10;
+	Vector2 translation_ = {};
 
-	Attack waveAtk_R[kWaveNum] = {};
-	Attack waveAtk_L[kWaveNum] = {};
-	
-	void WaveAtk();
+	Vector2 velocity_ = {};
+
+	float moveTimer_ = 0;
+
+	unsigned int currentTime;
+
+	int random = 0;
+
+	float kGround_ = 0;
+
+	//関数系
+	void Move();
 
 };
 
