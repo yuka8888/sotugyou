@@ -5,7 +5,8 @@
 #include "Player.h"
 #include "MapChipManager.h"
 #include "time.h"
-
+//追加
+#include"Puzzle.h"
 class PlayScene :public IScene
 {
 public:
@@ -39,6 +40,8 @@ private:
 
 	Player* player_ = nullptr;
 
+	//追加
+	Puzzle* puzzle_ = nullptr;
 	//現在のフェーズ
 	Phase phase_ = Phase::dice;
 

@@ -22,6 +22,9 @@ void PlayScene::Initialize()
 	player_ = new Player;
 	player_->Initialize();
 
+	puzzle_ = new Puzzle();
+	puzzle_->Initialize();
+
 	mapChipManager_ = new MapChipManager;
 
 	switch (phase_)
@@ -58,13 +61,15 @@ void PlayScene::Update()
 
 	switch (phase_) {
 		case Phase::dice:
-			player_->dicePhaseUpdate();
+			//player_->dicePhaseUpdate();
 
 			//サイコロをふる
-			RollTheDice();
+			//RollTheDice();
+			puzzle_->Update();
 
 			break;
 		case Phase::miniGame:
+			
 			break;
 		case Phase::boss:
 			break;
@@ -86,7 +91,7 @@ void PlayScene::Draw()
 
 	player_->Draw();
 	fade_->Draw();
-
+	puzzle_->Draw();
 }
 
 void PlayScene::DrawMap()
