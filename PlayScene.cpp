@@ -96,7 +96,17 @@ void PlayScene::Update()
 			else if (isCollision(player_->GetAABB(), boss_->GetAABB())) {
 				player_->IsCollision(true);
 			}
+
+
+			//もしプレイヤーが死んだら
+			if (player_->GetHp() <= 0 &&(fade_->GetStatus() == Fade::Status::FadeOut) && (fade_->IsFinished() == true)) {
+				sceneNo = kClear;
+			}
+			else if (player_->GetHp() <= 0 && fade_->IsFinished() == true) {
+				fade_->Start(Fade::Status::FadeOut, 1.0f);
+			}
 			break;
+
 	}
 
 	//フェーズの切り替え
