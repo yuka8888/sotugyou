@@ -38,7 +38,7 @@ void Boss::Move()
 
 	//左右の移動を一定時間でランダムに変える
 	if (moveTimer_ >= 10.0f) {
-		random = rand() / 2;
+		random = rand() % 2;
 		moveTimer_ = 0.0f;
 	}
 

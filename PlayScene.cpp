@@ -193,17 +193,18 @@ void PlayScene::RollTheDice()
 					pathsNum_++;
 				}
 			}
-			if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex + 1, player_->GetMapChipPosition().yIndex) != MapChipType::kBlank) {
-				if (prePaths_ != Direction::kRight) {
-					paths_[pathsNum_] = Direction::kLeft;
-					pathsNum_++;
-				}
-			}
+			//if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex + 1, player_->GetMapChipPosition().yIndex) != MapChipType::kBlank) {
+			//	if (prePaths_ != Direction::kRight) {
+			//		paths_[pathsNum_] = Direction::kLeft;
+			//		pathsNum_++;
+			//	}
+			//}
 
 			//進める場所が一つなら移動させる
 			if (pathsNum_ == 1) {
 				player_->SetPaths(paths_[0]);
 				dice_--;
+				prePaths_ = paths_[0];
 
 				//初期化
 				for (uint32_t i = 0; i < pathsNum_; i++) {
@@ -263,20 +264,20 @@ void PlayScene::RollTheDice()
 				isChoicePaths_ = false;
 
 			}
-			else if (paths_[i] == Direction::kLeft && keys[DIK_LEFTARROW]) {
-				player_->SetPaths(paths_[i]);
+			//else if (paths_[i] == Direction::kLeft && keys[DIK_LEFTARROW]) {
+			//	player_->SetPaths(paths_[i]);
 
-				dice_--;
-				prePaths_ = paths_[i];
+			//	dice_--;
+			//	prePaths_ = paths_[i];
 
-				//初期化
-				for (uint32_t j = 0; j < pathsNum_; j++) {
-					paths_[j] = {};
-				}
-				pathsNum_ = 0;
-				isChoicePaths_ = false;
+			//	//初期化
+			//	for (uint32_t j = 0; j < pathsNum_; j++) {
+			//		paths_[j] = {};
+			//	}
+			//	pathsNum_ = 0;
+			//	isChoicePaths_ = false;
 
-			}
+			//}
 		}
 	}
 	//サイコロの値プレイヤーが移動する
@@ -332,7 +333,7 @@ void PlayScene::ChangePhase()
 				else {
 					player_->SetHp(player_->GetHp() + 1);
 				}
-				
+
 			}
 			else if (fade_->GetStatus() == Fade::Status::FadeOut && fade_->IsFinished()) {
 				phase_ = Phase::dice;
