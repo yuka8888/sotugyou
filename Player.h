@@ -85,7 +85,7 @@ private:
 	//アクションゲーム関連
 	//ジャンプしているか
 	bool isJump = false;
-
+	bool isAlive_ = true;
 	/// <summary>
 	/// 移動
 	/// </summary>
