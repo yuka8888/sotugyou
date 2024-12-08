@@ -74,10 +74,10 @@ void PlayScene::Update()
 
 	switch (phase_) {
 		case Phase::dice:
-			player_->dicePhaseUpdate();
-
 			//サイコロをふる
 			RollTheDice();
+
+			player_->dicePhaseUpdate();
 
 			break;
 		case Phase::miniGame:
@@ -319,6 +319,20 @@ void PlayScene::ChangePhase()
 			//ミニゲームをクリアしたか
 			if (actionGame_->IsClear() && fade_->GetStatus() != Fade::Status::FadeOut) {
 				fade_->Start(Fade::Status::FadeOut, 1.0f);
+
+				//ランダムにステータス強化
+				random_ = rand() % 3;
+
+				if (random_ == 0) {
+					player_->SetAttack(player_->GetAttack() + 1);
+				}
+				else if (random_ == 1) {
+					player_->SetDefense(player_->GetDefense() + 1);
+				}
+				else {
+					player_->SetHp(player_->GetHp() + 1);
+				}
+				
 			}
 			else if (fade_->GetStatus() == Fade::Status::FadeOut && fade_->IsFinished()) {
 				phase_ = Phase::dice;

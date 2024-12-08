@@ -50,6 +50,8 @@ private:
 
 	MapChipManager* mapChipManager_ = nullptr;
 
+	int random_ = 0;
+
 	//すごろく関連
 	//進める道の個数
 	uint32_t pathsNum_ = 0;
