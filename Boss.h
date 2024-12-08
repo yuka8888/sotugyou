@@ -16,7 +16,7 @@ public:
 
 	void Draw();
 
-	void SetGround(float kGround);
+	AABB GetAABB();
 
 
 private:
@@ -31,6 +31,8 @@ private:
 	//体力
 	int hp_ = 100;
 
+	AABB aabb = {};
+
 	Vector2 translation_ = {};
 
 	Vector2 velocity_ = {};
@@ -40,8 +42,6 @@ private:
 	unsigned int currentTime;
 
 	int random = 0;
-
-	float kGround_ = 0;
 
 	//関数系
 	void Move();

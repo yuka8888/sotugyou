@@ -68,9 +68,6 @@
     <ClCompile Include="ActionGame.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
-    <ClCompile Include="BossScene.cpp">
-      <Filter>KamataEngine</Filter>
-    </ClCompile>
     <ClCompile Include="Boss.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
@@ -157,7 +154,6 @@
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="MapChipManager.h" />
     <ClInclude Include="ActionGame.h" />
-    <ClInclude Include="BossScene.h" />
     <ClInclude Include="Boss.h" />
   </ItemGroup>
 </Project>

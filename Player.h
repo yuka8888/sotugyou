@@ -13,6 +13,8 @@ public:
 
 	void ActionGameUpdate();
 
+	void BossUpdate();
+
 	void Draw();
 
 	void SetTranslation(Vector2 translation);
@@ -39,6 +41,10 @@ public:
 
 	int GetDefense();
 
+	void IsCollision(bool isCollision_);
+
+	bool IsPreCollision();
+
 private:
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
@@ -54,9 +60,11 @@ private:
 
 	AABB aabb_;
 
-	float kGround_ = 600.0f;
-
 	bool isGround_ = true;
+
+	bool isPreCollision_ = false;
+
+	bool isCollision_ = false;
 
 	Direction direction_ = Direction::kLeft;
 
@@ -84,7 +92,7 @@ private:
 
 	//アクションゲーム関連
 	//ジャンプしているか
-	bool isJump = false;
+	bool isJump_ = false;
 
 	/// <summary>
 	/// 移動

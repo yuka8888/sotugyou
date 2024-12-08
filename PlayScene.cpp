@@ -35,8 +35,8 @@ void PlayScene::Initialize()
 	actionGame_ = new ActionGame;
 	actionGame_->Initialize();
 
-	bossScene_ = new BossScene;
-	bossScene_->Initialize();
+	boss_ = new Boss;
+	boss_->Initialize();
 
 	switch (phase_)
 	{
@@ -85,7 +85,17 @@ void PlayScene::Update()
 
 			break;
 		case Phase::boss:
-			bossScene_->Update();
+			boss_->Update();
+			player_->BossUpdate();
+
+			//ボスとプレイヤーが当たったらダメージ
+			if (isCollision(player_->GetAABB(), boss_->GetAABB()) && !player_->IsPreCollision()) {
+				player_->SetHp(player_->GetHp() - 1);
+				player_->IsCollision(true);
+			}
+			else if (isCollision(player_->GetAABB(), boss_->GetAABB())) {
+				player_->IsCollision(true);
+			}
 			break;
 	}
 
@@ -112,7 +122,8 @@ void PlayScene::Draw()
 
 			break;
 		case Phase::boss:
-			bossScene_->Draw();
+			player_->Draw();
+			boss_->Draw();
 			break;
 	}
 

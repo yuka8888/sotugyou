@@ -5,7 +5,7 @@
 #include "Player.h"
 #include "MapChipManager.h"
 #include "ActionGame.h"
-#include "BossScene.h"
+#include "Boss.h"
 #include "time.h"
 
 class PlayScene :public IScene
@@ -29,8 +29,6 @@ private:
 		boss, // ボス
 	};
 
-	BossScene* bossScene_;
-
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
@@ -42,6 +40,8 @@ private:
 	Fade* fade_ = nullptr;
 
 	Player* player_ = nullptr;
+
+	Boss* boss_ = nullptr;
 
 	ActionGame* actionGame_ = nullptr;
 

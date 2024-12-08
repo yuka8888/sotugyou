@@ -39,6 +39,22 @@ void Player::ActionGameUpdate()
 	aabb_.min = { translation_.x - kWidth_ / 2.0f, translation_.y - kHeight_ / 2.0f };
 }
 
+void Player::BossUpdate()
+{
+	// キー入力を受け取る
+	memcpy(preKeys, keys, 256);
+	Novice::GetHitKeyStateAll(keys);
+
+	isPreCollision_ = isCollision_;
+	isCollision_ = false;
+
+	Move();
+
+	aabb_.max = { translation_.x + kWidth_ / 2.0f, translation_.y + kHeight_ / 2.0f };
+	aabb_.min = { translation_.x - kWidth_ / 2.0f, translation_.y - kHeight_ / 2.0f };
+
+}
+
 void Player::Draw()
 {
 	Novice::DrawBox(int(translation_.x - kWidth_ / 2.0f), int(translation_.y - kHeight_ / 2.0f), (int)kWidth_, (int)kHeight_, 0.0f, BLUE, kFillModeSolid);
@@ -111,6 +127,16 @@ int Player::GetDefense()
 	return defense_;
 }
 
+void Player::IsCollision(bool isCollision)
+{
+	isCollision_ = isCollision;
+}
+
+bool Player::IsPreCollision()
+{
+	return isPreCollision_;
+}
+
 
 void Player::Move()
 {
@@ -128,7 +154,7 @@ void Player::Move()
 
 	//スペースキーでジャンプ
 	if (isGround_ && (keys[DIK_W] || keys[DIK_UPARROW])) {
-		isJump = true;
+		isJump_ = true;
 		isGround_ = false;
 		acceleration_.y = -10.0f;
 	}
@@ -143,11 +169,15 @@ void Player::Move()
 
 	translation_ = translation_ + velocity_;
 
-	if (translation_.y > kGround_) {
+	if (translation_.y >= kGroundPosition - kHeight_ / 2.0f) {
 		isGround_ = true;
-		isJump = false;
+		isJump_ = false;
 		acceleration_ = {};
-		translation_.y = kGround_;
+		translation_.y = kGroundPosition - kHeight_ / 2.0f;
+	}
+	else {
+		isGround_ = false;
+		isJump_ = true;
 	}
 
 }

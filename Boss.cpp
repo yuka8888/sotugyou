@@ -12,11 +12,18 @@ void Boss::Initialize()
 {
 	currentTime = (unsigned int)time(nullptr);
 	srand(currentTime);
-	translation_.y = kGround_ - kHeight_ / 2.0f;
+	translation_.y = kGroundPosition - kHeight_ / 2.0f;
+	translation_.x = 400.0f;
+	aabb.max = { translation_.x + kWidth_ / 2.0f, translation_.y + kHeight_ / 2.0f };
+	aabb.min = { translation_.x - kWidth_ / 2.0f, translation_.y - kHeight_ / 2.0f };
 }
 
 void Boss::Update()
 {
+	//AABBの計算
+	aabb.max = { translation_.x + kWidth_ / 2.0f, translation_.y + kHeight_ / 2.0f };
+	aabb.min = { translation_.x - kWidth_ / 2.0f, translation_.y - kHeight_ / 2.0f };
+
 	//移動
 	Move();
 }
@@ -26,9 +33,9 @@ void Boss::Draw()
 	Novice::DrawBox(int(translation_.x - kWidth_ / 2.0f), int(translation_.y - kHeight_ / 2.0f), (int)kWidth_, (int)kHeight_, 0.0f, RED,kFillModeSolid);
 }
 
-void Boss::SetGround(float kGround)
+AABB Boss::GetAABB()
 {
-	kGround_ = kGround;
+	return aabb;
 }
 
 void Boss::Move()
