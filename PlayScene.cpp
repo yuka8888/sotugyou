@@ -102,11 +102,16 @@ void PlayScene::Update()
 	//フェーズの切り替え
 	ChangePhase();
 
+	//サイコロを振っていないか
+	if (dice_ == 0 && sugorokuTimer == 0.0f) {
+	isRollDice = false;
+	}
 
 }
 
 void PlayScene::Draw()
 {
+	int dice = (int)dice_;
 
 	switch (phase_) {
 		case Phase::dice:
@@ -116,6 +121,8 @@ void PlayScene::Draw()
 			player_->Draw();
 			Novice::DrawSprite(100, 550, rouletteTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 
+
+			ImGui::InputInt("dice", &dice);
 			break;
 		case Phase::miniGame:
 			actionGame_->Draw();
@@ -178,7 +185,7 @@ void PlayScene::RollTheDice()
 {
 	if (!isChoicePaths_) {
 		//Aキーでサイコロを振る
-		if (keys[DIK_A] && !preKeys[DIK_A] && (fade_->IsFinished() == true)) {
+		if (keys[DIK_A] && !preKeys[DIK_A] && (fade_->IsFinished() == true) && !isRollDice) {
 			dice_ = rand() % 6 + 1;
 			isRollDice = true;
 		}
@@ -313,7 +320,7 @@ void PlayScene::ChangePhase()
 					phase_ = Phase::miniGame;
 					actionGame_->Initialize();
 					isRollDice = false;
-
+					sugorokuTimer = 0.0f;
 				}
 			}
 			//ゴールしたのでボス戦に切り替え
