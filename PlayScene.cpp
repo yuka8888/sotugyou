@@ -131,7 +131,7 @@ void PlayScene::Draw()
 			player_->Draw();
 			Novice::DrawSprite(100, 550, rouletteTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 
-
+#
 			ImGui::InputInt("dice", &dice);
 			break;
 		case Phase::miniGame:
