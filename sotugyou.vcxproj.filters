@@ -65,6 +65,21 @@
     <ClCompile Include="MapChipManager.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
+    <ClCompile Include="ShootingPlayer.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ShootingEnemy.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ShootingPlayerBullet.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ShootingItem.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="ShootingItemManager.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -147,5 +162,10 @@
     <ClInclude Include="Fade.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="MapChipManager.h" />
+    <ClInclude Include="ShootingPlayer.h" />
+    <ClInclude Include="ShootingEnemy.h" />
+    <ClInclude Include="ShootingPlayerBullet.h" />
+    <ClInclude Include="ShootingItemManager.h" />
+    <ClInclude Include="ShootingItem.h" />
   </ItemGroup>
 </Project>
