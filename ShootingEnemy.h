@@ -1,21 +1,21 @@
-#pragma once
+ï»¿#pragma once
 #include "Vector2.h"
 
-class Enemy
+class ShootingEnemy
 {
 private:
-    Vector2 enemyPos_;   // ˆÊ’u
-    Vector2 enemySpeed_; // ƒXƒs[ƒh
-    int deathFrame_;     // €‚ñ‚¾‚Æ‚«‚ÌƒAƒjƒ[ƒVƒ‡ƒ“
-    float enemyRadius_;  // ”¼Œa
-    bool isEnemyAlive_;  // ¶‘¶ƒtƒ‰ƒO
+    Vector2 enemyPos_;   // ä½ç½®
+    Vector2 enemySpeed_; // ã‚¹ãƒ”ãƒ¼ãƒ‰
+    int deathFrame_;     // æ­»ã‚“ã ã¨ãã®ã‚¢ãƒ‹ãƒ¡ãƒ¼ã‚·ãƒ§ãƒ³
+    float enemyRadius_;  // åŠå¾„
+    bool isEnemyAlive_;  // ç”Ÿå­˜ãƒ•ãƒ©ã‚°
 
 public:
-    void Initalize();   // ‰Šú‰»
-    void OnCollision(); // “–‚½‚è”»’è
+    void Initalize();   // åˆæœŸåŒ–
+    void OnCollision(); // å½“ãŸã‚Šåˆ¤å®š
     void ReturnAlive();
-    void Update();      // XVˆ—
-    void Draw() const;  // •`‰æˆ—
+    void Update();      // æ›´æ–°å‡¦ç†
+    void Draw() const;  // æç”»å‡¦ç†
     void SetEnemyPosition(Vector2 position);
     float GetRadius() const { return enemyRadius_; }
     bool GetAlive() const { return isEnemyAlive_; }

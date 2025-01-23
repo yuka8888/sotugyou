@@ -1,21 +1,21 @@
-#pragma once
+ï»¿#pragma once
 #include "ShootingItem.h"
 #include <vector>
 
-class Player;
+class ShootingPlayer;
 
-class ItemManager
+class ShootingItemManager
 {
 private:
-    std::vector<Item> items_;
-    Player* player_; // PlayerƒNƒ‰ƒX‚Ö‚Ìƒ|ƒCƒ“ƒ^‚ğ•Û
+    std::vector<ShootingItem> items_;
+    ShootingPlayer* player_; // Playerã‚¯ãƒ©ã‚¹ã¸ã®ãƒã‚¤ãƒ³ã‚¿ã‚’ä¿æŒ
 
 public:
-    ItemManager();
+    ShootingItemManager();
     void Initialize();
     void Update(Vector2 playerPos, int playerRadius);
     void Draw();
     void SpawnItem(Vector2 spawnPos);
     bool CheckCollision(Vector2 playerPos, int playerRadius);
-    void SetPlayer(Player* player);
+    void SetPlayer(ShootingPlayer* player);
 };

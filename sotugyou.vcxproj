@@ -125,6 +125,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClCompile Include="PlayScene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ShootingEnemy.cpp" />
+    <ClCompile Include="ShootingEnemyManager.cpp" />
     <ClCompile Include="ShootingItem.cpp" />
     <ClCompile Include="ShootingItemManager.cpp" />
     <ClCompile Include="ShootingPlayer.cpp" />
@@ -168,6 +169,7 @@ xcopy C:\KamataEngine\DirectXGame\Resources "$(OutDirFullPath)NoviceResources" /
     <ClInclude Include="PlayScene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ShootingEnemy.h" />
+    <ClInclude Include="ShootingEnemyManager.h" />
     <ClInclude Include="ShootingItem.h" />
     <ClInclude Include="ShootingItemManager.h" />
     <ClInclude Include="ShootingPlayer.h" />

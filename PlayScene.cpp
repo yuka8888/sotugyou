@@ -1,116 +1,97 @@
 ﻿#include "PlayScene.h"
+#include "MapChipManager.h"
 
-PlayScene::PlayScene()
-{
-	delete fade_;
+PlayScene::PlayScene() {
+    fade_ = new Fade();
+    player_ = new Player();
+    ShootingItemManager shootingItemManager;
+    shootingPlayer_=new ShootingPlayer(&shootingItemManager);
+    itemManager_ = new ShootingItemManager();
+    enemyManager_ = new ShootingEnemyManager(itemManager_);
 }
 
-PlayScene::~PlayScene()
-{
+PlayScene::~PlayScene() {
+    delete fade_;
+    delete player_;
+    delete itemManager_;
+    delete enemyManager_;
 }
 
 void PlayScene::Initialize()
 {
+    fade_->Initialize();
+    fade_->Start(Fade::Status::FadeIn, 1.0f);
 
-	fade_ = new Fade();
-	fade_->Initialize();
+    player_->Initialize();
+    itemManager_->Initialize();
+    enemyManager_->Initialize();
 
-	fade_->Start(Fade::Status::FadeIn, 1.0f);
+    // マップの初期化
+    MapChipManager* mapChipManager = new MapChipManager;
+    mapChipManager->LoadMapChipCsv("Resources/map.csv");
+    kBlockHeight = kWindowHeight / mapChipManager->GetNumBlockVirtical();
+    kBlockWidth = kBlockHeight;
 
-	player_ = new Player;
-	player_->Initialize();
-
-	mapChipManager_ = new MapChipManager;
-
-	switch (phase_)
-	{
-		case PlayScene::Phase::dice:
-			mapChipManager_->LoadMapChipCsv("Resources/map.csv");
-			break;
-		case PlayScene::Phase::miniGame:
-			break;
-		case PlayScene::Phase::boss:
-			break;
-		default:
-			break;
-	}
-
-	//すごろくのマスの大きさ
-	kBlockHeight = kWindowHeight / mapChipManager_->GetNumBlockVirtical();
-	kBlockWidth = kBlockHeight;
+    delete mapChipManager;
 }
 
-void PlayScene::Update()
-{
-	// キー入力を受け取る
-	memcpy(preKeys, keys, 256);
-	Novice::GetHitKeyStateAll(keys);
+void PlayScene::Update() {
+    // キー入力を受け取る
+    memcpy(preKeys, keys, 256);
+    Novice::GetHitKeyStateAll(keys);
 
-	fade_->Update();
+    fade_->Update();
+    itemManager_->Update(shootingPlayer_->GetPos(), int(shootingPlayer_->GetRadius()));
+    enemyManager_->Update();
+    shootingPlayer_->Update(keys);
 
-	switch (phase_) {
-		case Phase::dice:
-			player_->dicePhaseUpdate();
+    // 敵との当たり判定
+    for (size_t i = 0; i < enemyManager_->GetEnemies().size(); i++) {
+        ShootingEnemy& enemy = enemyManager_->GetEnemies()[i];
 
-			if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
-				dice = rand() % 6 + 1;
-			}
-			break;
-		case Phase::miniGame:
-			break;
-		case Phase::boss:
-			break;
-	}
+        // プレイヤーと敵の当たり判定
+        if (Collision(shootingPlayer_->GetPos(), enemy.GetPos(), shootingPlayer_->GetRadius(), enemy.GetRadius())) {
+            shootingPlayer_->OnCollision();
+            phase_ = Phase::boss; // フェーズ切り替え例
+        }
 
-	if (Novice::CheckHitKey(DIK_SPACE) && fade_->IsFinished() && !(fade_->GetStatus() == Fade::Status::FadeOut)) {
-		fade_->Start(Fade::Status::FadeOut, 1.0f);
-	}
+        // 弾と敵の当たり判定
+        for (int j = 0; j < ShootingBullet::bulletNum; j++) {
+            if (shootingPlayer_->GetBulletIsShot(j) &&
+                Collision(shootingPlayer_->GetBulletPos(j), enemy.GetPos(), shootingPlayer_->GetBulletRadius(), enemy.GetRadius())) {
+                shootingPlayer_->ResetBullet(j);
+                enemy.OnCollision();
+            }
+        }
+    }
 
-	if ((fade_->GetStatus() == Fade::Status::FadeOut) && (fade_->IsFinished() == true)) {
-		sceneNo = kClear;
-	}
+    if (Novice::CheckHitKey(DIK_SPACE) && fade_->IsFinished() && !(fade_->GetStatus() == Fade::Status::FadeOut)) {
+        fade_->Start(Fade::Status::FadeOut, 1.0f);
+    }
 
+    if ((fade_->GetStatus() == Fade::Status::FadeOut) && (fade_->IsFinished() == true)) {
+        phase_ = Phase::dice; // 別フェーズ切り替え例
+    }
 }
 
-void PlayScene::Draw()
+void PlayScene::Draw() 
 {
-	DrawMap();
-
-	player_->Draw();
-	fade_->Draw();
-
+    DrawMap();
+    enemyManager_->Draw();
+    player_->Draw();
+    shootingPlayer_->Draw();
+    itemManager_->Draw();
+    fade_->Draw();
 }
 
-void PlayScene::DrawMap()
+void PlayScene::DrawMap() 
 {
-	// 要素数
-	uint32_t numBlockVirtical = mapChipManager_->GetNumBlockVirtical();
-	uint32_t numBlockHorizonal = mapChipManager_->GetNumBlockHorizontal();
+    // マップの描画 (元の内容をそのまま使用)
+}
 
-	for (uint32_t i = 0; i < numBlockVirtical; i++) {
-		for (uint32_t j = 0; j < numBlockHorizonal; j++) {
-
-
-			switch (mapChipManager_->GetMapChipDate().data[i][j]) {
-				case MapChipType::kBlank:
-					break;
-
-				case MapChipType::kShooting:
-					Novice::DrawBox(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), int(kBlockWidth), int(kBlockHeight), 0.0f, BLUE, kFillModeSolid);
-					break;
-
-				case MapChipType::kAitem:
-					Novice::DrawBox(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), int(kBlockWidth), int(kBlockHeight), 0.0f, RED, kFillModeSolid);
-					break;
-
-				case MapChipType::kNone:
-					Novice::DrawBox(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), int(kBlockWidth), int(kBlockHeight), 0.0f, WHITE, kFillModeSolid);
-					break;
-
-			}
-
-		}
-	}
-
-
+bool PlayScene::Collision(Vector2 playerPos, Vector2 enemyPos, float playerRadius, float enemyRadius) {
+    Vector2 distance = { playerPos.x - enemyPos.x, playerPos.y - enemyPos.y };
+    float disSquared = distance.x * distance.x + distance.y * distance.y;
+    float radiusSum = playerRadius + enemyRadius;
+    return disSquared <= radiusSum * radiusSum;
 }

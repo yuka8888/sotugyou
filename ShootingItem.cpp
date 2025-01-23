@@ -1,27 +1,27 @@
-#include "ShootingItem.h"
+ï»¿#include "ShootingItem.h"
 #include <Novice.h>
 
-Item::Item() : pos_({ 0, 0 }), radius_(16), isAlive_(false) {}
+ShootingItem::ShootingItem() : pos_({ 0, 0 }), radius_(16), isAlive_(false) {}
 
-void Item::Initialize(Vector2 spawnPos)
+void ShootingItem::Initialize(Vector2 spawnPos)
 {
     pos_ = spawnPos;
     radius_ = 16;
     isAlive_ = true;
 }
 
-void Item::Update()
+void ShootingItem::Update()
 {
     if (isAlive_)
     {
-        pos_.x -= 2; // ‚ä‚Á‚­‚è‰º‚É—Ž‚¿‚é
-        if (pos_.x < 0 - radius_) { // ‰æ–ÊŠO‚Éo‚½‚çÁ‚¦‚é
+        pos_.x -= 2; // ã‚†ã£ãã‚Šä¸‹ã«è½ã¡ã‚‹
+        if (pos_.x < 0 - radius_) { // ç”»é¢å¤–ã«å‡ºãŸã‚‰æ¶ˆãˆã‚‹
             isAlive_ = false;
         }
     }
 }
 
-void Item::Draw() const
+void ShootingItem::Draw() const
 {
     if (isAlive_)
     {
@@ -29,7 +29,7 @@ void Item::Draw() const
     }
 }
 
-bool Item::CheckCollision(Vector2 playerPos, int playerRadius) const
+bool ShootingItem::CheckCollision(Vector2 playerPos, int playerRadius) const
 {
     if (!isAlive_)
     {

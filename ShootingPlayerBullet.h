@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Vector2.h"
 
 struct BulletData
@@ -7,7 +7,7 @@ struct BulletData
     bool isShot;
 };
 
-class Bullet
+class ShootingBullet
 {
 public:
     static const int bulletNum = 10;
@@ -15,10 +15,10 @@ public:
 private:
     BulletData bullets_[bulletNum];
     int speed_;
-    int radius_; // ”¼Œa
+    int radius_; // åŠå¾„
 
 public:
-    Bullet();
+    ShootingBullet();
     void Update();
     void Draw();
     void Fire(Vector2 startPos);
@@ -26,6 +26,6 @@ public:
     Vector2 GetBulletPos(int index) const;
     bool GetBulletIsShot(int index) const;
 
-    // ”¼Œa‚ğæ“¾‚·‚éŠÖ”‚ğ’Ç‰Á
+    // åŠå¾„ã‚’å–å¾—ã™ã‚‹é–¢æ•°ã‚’è¿½åŠ 
     int GetRadius() const { return radius_; }
 };

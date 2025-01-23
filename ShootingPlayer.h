@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "ShootingPlayerBullet.h"
 #include "ShootingItemManager.h"
 
@@ -8,7 +8,7 @@ enum class PlayerBulletType
     SpreadShot
 };
 
-class Player
+class ShootingPlayer
 {
 private:
     Vector2 pos_;
@@ -17,13 +17,13 @@ private:
     int deathFrame_;
     float speed_;
     bool isAlive_;
-    Bullet* bullet_;
+    ShootingBullet* bullet_;
     PlayerBulletType bulletType_;
-    ItemManager* itemManager_; // ƒƒ“ƒo‚Æ‚µ‚Ä `ItemManager` ‚ğ•Û
+    ShootingItemManager* itemManager_; // ãƒ¡ãƒ³ãƒã¨ã—ã¦ `ItemManager` ã‚’ä¿æŒ
 
 public:
-    Player(ItemManager* itemManager);
-    ~Player();
+    ShootingPlayer(ShootingItemManager* itemManager);
+    ~ShootingPlayer();
     void OnCollision();
     void Initalize();
     void Update(char* keys);
@@ -32,12 +32,12 @@ public:
     float GetRadius() const { return float(radius_); }
     float GetSpeed() const;
 
-    // ’eŠÇ—ŠÖ˜A‚ÌŠÖ”
+    // å¼¾ç®¡ç†é–¢é€£ã®é–¢æ•°
     Vector2 GetBulletPos(int index) const { return bullet_->GetBulletPos(index); }
     bool GetBulletIsShot(int index) const { return bullet_->GetBulletIsShot(index); }
     float GetBulletRadius() const { return float(bullet_->GetRadius()); }
     void ResetBullet(int index) { bullet_->ResetBullet(index); }
     void SetBulletType(PlayerBulletType type) { bulletType_ = type; }
     PlayerBulletType GetBulletType() const { return bulletType_; }
-    void FireBullets(); // ’e”­Ë‚Ìˆ—‚ğ•ª—£
+    void FireBullets(); // å¼¾ç™ºå°„ã®å‡¦ç†ã‚’åˆ†é›¢
 };

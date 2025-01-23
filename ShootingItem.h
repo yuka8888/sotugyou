@@ -1,16 +1,16 @@
-#pragma once
+ï»¿#pragma once
 #pragma once
 #include "Vector2.h"
 
-class Item
+class ShootingItem
 {
 private:
-	Vector2 pos_;       // ˆÊ’u
-	int radius_;        // ”¼Œa
-	bool isAlive_;      // ¶‘¶ƒtƒ‰ƒOi‘¶İ‚·‚é‚©‚Ç‚¤‚©j
+	Vector2 pos_;       // ä½ç½®
+	int radius_;        // åŠå¾„
+	bool isAlive_;      // ç”Ÿå­˜ãƒ•ãƒ©ã‚°ï¼ˆå­˜åœ¨ã™ã‚‹ã‹ã©ã†ã‹ï¼‰
 
 public:
-	Item();
+	ShootingItem();
 	void Initialize(Vector2 spawnPos);
 	void Update();
 	void Draw() const;

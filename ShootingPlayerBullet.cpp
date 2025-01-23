@@ -1,8 +1,8 @@
-#include "ShootingPlayerBullet.h"
+ï»¿#include "ShootingPlayerBullet.h"
 #include <Novice.h>
 
-// ƒRƒ“ƒXƒgƒ‰ƒNƒ^
-Bullet::Bullet()
+// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+ShootingBullet::ShootingBullet()
 {
     for (int i = 0; i < bulletNum; i++)
     {
@@ -13,8 +13,8 @@ Bullet::Bullet()
     speed_ = 8;
 }
 
-// ’e‚ÌXVˆ—
-void Bullet::Update()
+// å¼¾ã®æ›´æ–°å‡¦ç†
+void ShootingBullet::Update()
 {
     for (int i = 0; i < bulletNum; i++)
     {
@@ -22,15 +22,15 @@ void Bullet::Update()
         {
             bullets_[i].pos.x += speed_;
             if (bullets_[i].pos.x > 1280)
-            { // ‰æ–ÊŠO‚Éo‚½‚çƒŠƒZƒbƒg
+            { // ç”»é¢å¤–ã«å‡ºãŸã‚‰ãƒªã‚»ãƒƒãƒˆ
                 bullets_[i].isShot = false;
             }
         }
     }
 }
 
-// ’e‚Ì•`‰æˆ—
-void Bullet::Draw()
+// å¼¾ã®æç”»å‡¦ç†
+void ShootingBullet::Draw()
 {
     for (int i = 0; i < bulletNum; i++)
     {
@@ -49,30 +49,30 @@ void Bullet::Draw()
     }
 }
 
-// ’e‚ğ”­Ë
-void Bullet::Fire(Vector2 startPos)
+// å¼¾ã‚’ç™ºå°„
+void ShootingBullet::Fire(Vector2 startPos)
 {
     for (int i = 0; i < bulletNum; i++)
     {
         if (!bullets_[i].isShot) {
-            bullets_[i].pos = startPos; // ”­ËˆÊ’u‚ğİ’è
-            bullets_[i].isShot = true; // ”­Ëó‘Ô‚Éİ’è
+            bullets_[i].pos = startPos; // ç™ºå°„ä½ç½®ã‚’è¨­å®š
+            bullets_[i].isShot = true; // ç™ºå°„çŠ¶æ…‹ã«è¨­å®š
             break;
         }
     }
 }
 
-// ’e‚ÌƒŠƒZƒbƒg
-void Bullet::ResetBullet(int index)
+// å¼¾ã®ãƒªã‚»ãƒƒãƒˆ
+void ShootingBullet::ResetBullet(int index)
 {
     if (index >= 0 && index < bulletNum)
     {
-        bullets_[index].isShot = false; // ”­Ëó‘Ô‚ğ‰ğœ
+        bullets_[index].isShot = false; // ç™ºå°„çŠ¶æ…‹ã‚’è§£é™¤
     }
 }
 
-// ’e‚ÌˆÊ’u‚ğæ“¾
-Vector2 Bullet::GetBulletPos(int index) const
+// å¼¾ã®ä½ç½®ã‚’å–å¾—
+Vector2 ShootingBullet::GetBulletPos(int index) const
 {
     if (index >= 0 && index < bulletNum)
     {
@@ -81,8 +81,8 @@ Vector2 Bullet::GetBulletPos(int index) const
     return { 0, 0 };
 }
 
-// ’e‚Ì”­Ëó‘Ô‚ğæ“¾
-bool Bullet::GetBulletIsShot(int index) const
+// å¼¾ã®ç™ºå°„çŠ¶æ…‹ã‚’å–å¾—
+bool ShootingBullet::GetBulletIsShot(int index) const
 {
     if (index >= 0 && index < bulletNum)
     {

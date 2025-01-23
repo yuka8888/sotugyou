@@ -1,10 +1,10 @@
-#include "ShootingEnemy.h"
+ï»¿#include "ShootingEnemy.h"
 #include "ShootingItemManager.h"
 #include "Novice.h"
 
-extern ItemManager itemManager; // ƒAƒCƒeƒ€ƒ}ƒl[ƒWƒƒ‚ðŽQÆ
+extern ShootingItemManager itemManager; // ã‚¢ã‚¤ãƒ†ãƒ ãƒžãƒãƒ¼ã‚¸ãƒ£ã‚’å‚ç…§
 
-void Enemy::Initalize()
+void ShootingEnemy::Initalize()
 {
 	this->enemyPos_.x = 640.0f;
 	this->enemyPos_.y = 20.0f;
@@ -15,16 +15,16 @@ void Enemy::Initalize()
 	this->isEnemyAlive_ = true;
 }
 
-void Enemy::OnCollision() { isEnemyAlive_ = false; }
+void ShootingEnemy::OnCollision() { isEnemyAlive_ = false; }
 
-void Enemy::ReturnAlive() { isEnemyAlive_ = true; }
+void ShootingEnemy::ReturnAlive() { isEnemyAlive_ = true; }
 
-void Enemy::Update()
+void ShootingEnemy::Update()
 {
 	enemyPos_.x += enemySpeed_.x;
 }
 
-void Enemy::Draw() const
+void ShootingEnemy::Draw() const
 {
 	if (isEnemyAlive_ == true)
 	{
@@ -34,12 +34,12 @@ void Enemy::Draw() const
 	}
 }
 
-void Enemy::SetEnemyPosition(Vector2 position)
+void ShootingEnemy::SetEnemyPosition(Vector2 position)
 {
 	enemyPos_ = position;
 }
 
-void Enemy::SetSpeed(Vector2 speed)
+void ShootingEnemy::SetSpeed(Vector2 speed)
 {
 	enemySpeed_.x = speed.x;
 	enemySpeed_.y = speed.y;

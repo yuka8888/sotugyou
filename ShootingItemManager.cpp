@@ -1,33 +1,33 @@
-#include "ShootingItemManager.h"
+ï»¿#include "ShootingItemManager.h"
 #include"ShootingPlayer.h"
 #include<Novice.h>
 #include <cassert>
 
-ItemManager::ItemManager() : player_(nullptr) {}
+ShootingItemManager::ShootingItemManager() : player_(nullptr) {}
 
-void ItemManager::Initialize()
+void ShootingItemManager::Initialize()
 {
 	items_.clear();
 }
 
-void ItemManager::Update(Vector2 playerPos, int playerRadius)
+void ShootingItemManager::Update(Vector2 playerPos, int playerRadius)
 {
 	for (auto& item : items_)
 	{
 		item.Update();
 		if (item.CheckCollision(playerPos, playerRadius))
 		{
-			// ƒvƒŒƒCƒ„[‚ÆÕ“Ë‚µ‚½‚çƒAƒCƒeƒ€Œø‰Ê‚ğ”­“®
-			 // ƒAƒCƒeƒ€‚ªæ“¾‚³‚ê‚½ê‡
+			// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨è¡çªã—ãŸã‚‰ã‚¢ã‚¤ãƒ†ãƒ åŠ¹æœã‚’ç™ºå‹•
+			 // ã‚¢ã‚¤ãƒ†ãƒ ãŒå–å¾—ã•ã‚ŒãŸå ´åˆ
 			Novice::ScreenPrintf(0, 20, "Item collected!");
-			item.SetAlive(false); // ƒAƒCƒeƒ€‚ğÁ‚·
+			item.SetAlive(false); // ã‚¢ã‚¤ãƒ†ãƒ ã‚’æ¶ˆã™
 
 			player_->SetBulletType(PlayerBulletType::SpreadShot);
 		}
 	}
 }
 
-void ItemManager::Draw()
+void ShootingItemManager::Draw()
 {
 	for (const auto& item : items_)
 	{
@@ -35,17 +35,17 @@ void ItemManager::Draw()
 	}
 }
 
-void ItemManager::SpawnItem(Vector2 spawnPos)
+void ShootingItemManager::SpawnItem(Vector2 spawnPos)
 {
-	Item newItem;
+	ShootingItem newItem;
 	newItem.Initialize(spawnPos);
 	items_.push_back(newItem);
 }
 
-bool ItemManager::CheckCollision(Vector2 playerPos, int playerRadius) {
-	// ‘S‚Ä‚ÌƒAƒCƒeƒ€‚É‘Î‚µ‚ÄÕ“Ë”»’è‚ğƒ`ƒFƒbƒN
+bool ShootingItemManager::CheckCollision(Vector2 playerPos, int playerRadius) {
+	// å…¨ã¦ã®ã‚¢ã‚¤ãƒ†ãƒ ã«å¯¾ã—ã¦è¡çªåˆ¤å®šã‚’ãƒã‚§ãƒƒã‚¯
 	for (auto& item : items_) {
-		if (item.GetAlive()) { // ¶‘¶‚µ‚Ä‚¢‚éƒAƒCƒeƒ€‚Ì‚İ”»’è
+		if (item.GetAlive()) { // ç”Ÿå­˜ã—ã¦ã„ã‚‹ã‚¢ã‚¤ãƒ†ãƒ ã®ã¿åˆ¤å®š
 			Vector2 distance = {
 				playerPos.x - item.GetPos().x,
 				playerPos.y - item.GetPos().y
@@ -53,18 +53,18 @@ bool ItemManager::CheckCollision(Vector2 playerPos, int playerRadius) {
 			float distanceSquared = (distance.x * distance.x) + (distance.y * distance.y);
 			float radiusSum = float(playerRadius) + item.GetRadius();
 
-			// ƒvƒŒƒCƒ„[‚ÆƒAƒCƒeƒ€‚ªÕ“Ë‚µ‚Ä‚¢‚½‚ç
+			// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨ã‚¢ã‚¤ãƒ†ãƒ ãŒè¡çªã—ã¦ã„ãŸã‚‰
 			if (distanceSquared <= radiusSum * radiusSum) {
-				item.SetAlive(false); // ƒAƒCƒeƒ€‚ğ”ñƒAƒNƒeƒBƒu‚É
-				return true; // Õ“Ë‚ª”­¶‚µ‚½‚±‚Æ‚ğ•Ô‚·
+				item.SetAlive(false); // ã‚¢ã‚¤ãƒ†ãƒ ã‚’éã‚¢ã‚¯ãƒ†ã‚£ãƒ–ã«
+				return true; // è¡çªãŒç™ºç”Ÿã—ãŸã“ã¨ã‚’è¿”ã™
 			}
 		}
 	}
 
-	return false; // ‚Ç‚ÌƒAƒCƒeƒ€‚Æ‚àÕ“Ë‚µ‚Ä‚¢‚È‚¢
+	return false; // ã©ã®ã‚¢ã‚¤ãƒ†ãƒ ã¨ã‚‚è¡çªã—ã¦ã„ãªã„
 }
 
-void ItemManager::SetPlayer(Player* player)
+void ShootingItemManager::SetPlayer(ShootingPlayer* player)
 {
 	player_ = player;
 	assert(player_ != nullptr && "Player pointer is null!");

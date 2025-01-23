@@ -1,71 +1,131 @@
-#include "ShootingPlayer.h"
-#include<Novice.h>
-#include"ShootingPlayer.h"
-#include <cassert>
+ï»¿#include "ShootingPlayer.h"
+#include <Novice.h>
 
-ItemManager::ItemManager() : player_(nullptr) {}
-
-void ItemManager::Initialize()
+void ShootingPlayer::Initalize()
 {
-	items_.clear();
+    pos_ = { 0, 500 };
+    radius_ = 20;
+    speed_ = 4.0f;
+    bulletIntervalFrame_ = 20;
+    isAlive_ = true;
+    deathFrame_ = 120;
+    bulletType_ = PlayerBulletType::Normal;
+    bullet_ = new ShootingBullet();
 }
 
-void ItemManager::Update(Vector2 playerPos, int playerRadius)
-{
-	for (auto& item : items_)
-	{
-		item.Update();
-		if (item.CheckCollision(playerPos, playerRadius))
-		{
-			// ƒvƒŒƒCƒ„[‚ÆÕ“Ë‚µ‚½‚çƒAƒCƒeƒ€Œø‰Ê‚ğ”­“®
-			 // ƒAƒCƒeƒ€‚ªæ“¾‚³‚ê‚½ê‡
-			Novice::ScreenPrintf(0, 20, "Item collected!");
-			item.SetAlive(false); // ƒAƒCƒeƒ€‚ğÁ‚·
+// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒåˆæœŸåŒ–ã™ã‚‹æƒ…å ±
+ShootingPlayer::~ShootingPlayer() { delete bullet_; }
 
-			player_->SetBulletType(PlayerBulletType::SpreadShot);
-		}
-	}
+ShootingPlayer::ShootingPlayer(ShootingItemManager* itemManager) : itemManager_(itemManager)
+{
+    // åˆæœŸåŒ–å‡¦ç†
+    bullet_ = new ShootingBullet();
+    pos_ = { 0, 500 };
+    radius_ = 20;
+    speed_ = 4.0f;
+    bulletIntervalFrame_ = 20;
+    isAlive_ = true;
+    deathFrame_ = 120;
+    bulletType_ = PlayerBulletType::Normal;
 }
 
-void ItemManager::Draw()
+void ShootingPlayer::OnCollision()
 {
-	for (const auto& item : items_)
-	{
-		item.Draw();
-	}
+    isAlive_ = false;
+    if (isAlive_ == false)
+    {
+        deathFrame_++;
+    }
+    if (deathFrame_ == 120)
+    {
+        isAlive_ = true;
+        deathFrame_ = 0;
+    }
 }
 
-void ItemManager::SpawnItem(Vector2 spawnPos)
+void ShootingPlayer::Update(char* keys)
 {
-	Item newItem;
-	newItem.Initialize(spawnPos);
-	items_.push_back(newItem);
+    // ç§»å‹•å‡¦ç†
+    if (keys[DIK_W] || keys[DIK_UP])
+    {
+        pos_.y -= speed_;
+    }
+    if (keys[DIK_S] || keys[DIK_DOWN])
+    {
+        pos_.y += speed_;
+    }
+    if ((keys[DIK_A] || keys[DIK_LEFT]) && pos_.x >= 0)
+    {
+        pos_.x -= speed_;
+    }
+    if ((keys[DIK_D] || keys[DIK_RIGHT]) && pos_.x <= 200)
+    {
+        pos_.x += speed_;
+    }
+
+    // å¼¾ã®ç™ºå°„
+    if (keys[DIK_SPACE] && bulletIntervalFrame_ == 0)
+    {
+        FireBullets(); // `FireBullets` ã‚’å‘¼ã³å‡ºã™
+        bulletIntervalFrame_ = 20; // ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ 
+    }
+
+    // ã‚¢ã‚¤ãƒ†ãƒ ã®å–å¾—ã‚’ãƒã‚§ãƒƒã‚¯
+    itemManager_->Update(pos_, radius_);
+
+    // ç§»å‹•ç¯„å›²ã®åˆ¶é™
+    if (pos_.x > 1260)
+    {
+        pos_.x = 1260;
+    }
+    if (pos_.x < 20)
+    {
+        pos_.x = 20;
+    }
+    if (pos_.y > 700)
+    {
+        pos_.y = 700;
+    }
+    if (pos_.y < 20)
+    {
+        pos_.y = 20;
+    }
+
+    // å¼¾ã®æ›´æ–°
+    bullet_->Update();
+
+    // ã‚¯ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ ã®ã‚«ã‚¦ãƒ³ãƒˆ
+    if (bulletIntervalFrame_ != 0)
+    {
+        bulletIntervalFrame_--;
+    }
 }
 
-bool ItemManager::CheckCollision(Vector2 playerPos, int playerRadius) {
-	// ‘S‚Ä‚ÌƒAƒCƒeƒ€‚É‘Î‚µ‚ÄÕ“Ë”»’è‚ğƒ`ƒFƒbƒN
-	for (auto& item : items_) {
-		if (item.GetAlive()) { // ¶‘¶‚µ‚Ä‚¢‚éƒAƒCƒeƒ€‚Ì‚İ”»’è
-			Vector2 distance = {
-				playerPos.x - item.GetPos().x,
-				playerPos.y - item.GetPos().y
-			};
-			float distanceSquared = (distance.x * distance.x) + (distance.y * distance.y);
-			float radiusSum = float(playerRadius) + item.GetRadius();
 
-			// ƒvƒŒƒCƒ„[‚ÆƒAƒCƒeƒ€‚ªÕ“Ë‚µ‚Ä‚¢‚½‚ç
-			if (distanceSquared <= radiusSum * radiusSum) {
-				item.SetAlive(false); // ƒAƒCƒeƒ€‚ğ”ñƒAƒNƒeƒBƒu‚É
-				return true; // Õ“Ë‚ª”­¶‚µ‚½‚±‚Æ‚ğ•Ô‚·
-			}
-		}
-	}
-
-	return false; // ‚Ç‚ÌƒAƒCƒeƒ€‚Æ‚àÕ“Ë‚µ‚Ä‚¢‚È‚¢
+void ShootingPlayer::Draw()
+{
+    if (isAlive_ == true)
+    {
+        Novice::DrawEllipse(
+            int(pos_.x), int(pos_.y), int(radius_), int(radius_), 0.0f, WHITE, kFillModeSolid);
+        bullet_->Draw();
+    }
 }
 
-void ItemManager::SetPlayer(Player* player)
+float ShootingPlayer::GetSpeed() const { return speed_; }
+
+void ShootingPlayer::FireBullets()
 {
-	player_ = player;
-	assert(player_ != nullptr && "Player pointer is null!");
+    switch (bulletType_)
+    {
+        case PlayerBulletType::Normal:
+            bullet_->Fire(pos_); // é€šå¸¸å¼¾
+            break;
+
+        case PlayerBulletType::SpreadShot:
+            bullet_->Fire(pos_);                  // çœŸã£ç›´ã
+            bullet_->Fire({ pos_.x, pos_.y - 20 }); // 45åº¦æ–¹å‘
+            bullet_->Fire({ pos_.x, pos_.y + 20 }); // -45åº¦æ–¹å‘
+            break;
+    }
 }
