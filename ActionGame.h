@@ -65,7 +65,7 @@ private:
 
 	Vector2 velocity_ = {};
 
-	float moveTimer_ = 0;
+	float moveTimer_ = 5.0f;
 
 	unsigned int currentTime_ = 0;
 

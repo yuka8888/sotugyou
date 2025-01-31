@@ -128,7 +128,7 @@ void PlayScene::Update()
 
 
 			//もしプレイヤーが死んだら
-			if (player_->GetHp() <= 0 &&(fade_->GetStatus() == Fade::Status::FadeOut) && (fade_->IsFinished() == true)) {
+			if (player_->GetHp() <= 0 && (fade_->GetStatus() == Fade::Status::FadeOut) && (fade_->IsFinished() == true)) {
 				sceneNo = kClear;
 			}
 			else if (player_->GetHp() <= 0 && fade_->IsFinished() == true) {
@@ -143,7 +143,7 @@ void PlayScene::Update()
 
 	//サイコロを振っていないか
 	if (dice_ == 0 && sugorokuTimer == 0.0f) {
-	isRollDice = false;
+		isRollDice = false;
 	}
 
 }
@@ -216,15 +216,6 @@ void PlayScene::Action()
 		actionGame_->IsCollision(true);
 	}
 
-	//もしプレイヤーが死んだら
-	if (player_->GetHp() <= 0 && (fade_->GetStatus() == Fade::Status::FadeOut) && (fade_->IsFinished() == true)) {
-		sceneNo = kClear;
-	}
-	else if (player_->GetHp() <= 0 && fade_->IsFinished() == true) {
-		fade_->Start(Fade::Status::FadeOut, 1.0f);
-	}
-	
-
 }
 
 void PlayScene::DrawMap()
@@ -247,7 +238,7 @@ void PlayScene::DrawMap()
 
 				case MapChipType::kAction:
 					Novice::DrawSprite(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), actionBlockTexture_, 1.0f, 1.0f, 0.0f, WHITE);
- 					break;
+					break;
 
 				case MapChipType::kAitem:
 					Novice::DrawSprite(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), itemBlockTexture_, 1.0f, 1.0f, 0.0f, WHITE);
@@ -410,7 +401,6 @@ void PlayScene::ChangePhase()
 				else if (fade_->IsFinished()) {
 					fade_->Start(Fade::Status::FadeIn, 1.0f);
 					phase_ = Phase::pazzle;
-					player_->SetPosition({ 150.0f, 500.0f });
 					actionGame_->Initialize();
 					isRollDice = false;
 					sugorokuTimer = 0.0f;
@@ -427,6 +417,7 @@ void PlayScene::ChangePhase()
 				else if (fade_->IsFinished()) {
 					fade_->Start(Fade::Status::FadeIn, 1.0f);
 					phase_ = Phase::action;
+					prePlayerPosition_ = player_->GetPosition();
 					player_->SetPosition({ 150.0f, 500.0f });
 					actionGame_->Initialize();
 					isRollDice = false;
@@ -460,10 +451,17 @@ void PlayScene::ChangePhase()
 				}
 
 			}
+			//アクションをクリアできなかった
+			if (player_->GetHp() <= 0 && (fade_->GetStatus() != Fade::Status::FadeOut)) {
+				fade_->Start(Fade::Status::FadeOut, 1.0f);
+
+			}
 			else if (fade_->GetStatus() == Fade::Status::FadeOut && fade_->IsFinished()) {
 				phase_ = Phase::dice;
 				delete actionGame_;
 				actionGame_ = new ActionGame;
+				actionGame_->Initialize();
+				player_->SetPosition(prePlayerPosition_);
 				fade_->Start(Fade::Status::FadeIn, 1.0f);
 			}
 
@@ -485,10 +483,15 @@ void PlayScene::ChangePhase()
 				}
 
 			}
+			//パズルをクリアできなかった
+			if (puzzle_->IsGameOver() && fade_->GetStatus() != Fade::Status::FadeOut) {
+				fade_->Start(Fade::Status::FadeOut, 1.0f);
+			}
 			else if (fade_->GetStatus() == Fade::Status::FadeOut && fade_->IsFinished()) {
 				phase_ = Phase::dice;
 				delete puzzle_;
 				puzzle_ = new Puzzle;
+				puzzle_->Initialize();
 				fade_->Start(Fade::Status::FadeIn, 1.0f);
 			}
 

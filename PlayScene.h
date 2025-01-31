@@ -58,6 +58,8 @@ private:
 
 	int random_ = 0;
 
+	Vector2 prePlayerPosition_ = {};
+
 	//すごろく関連
 	//進める道の個数
 	uint32_t pathsNum_ = 0;
