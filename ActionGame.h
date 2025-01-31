@@ -1,29 +1,92 @@
 ﻿#pragma once
 #include "mt.h"
-#include "Player.h"
+#include "Novice.h"
+#include "time.h"
+#include "imgui.h"
+#include "Bullet.h"
 
 class ActionGame
 {
 public:
+	ActionGame();
+
+	~ActionGame();
+
 	void Initialize();
 
 	void Update();
 
 	void Draw();
 
+	AABB GetAABB();
+
+	AABB GetBulletAABB();
+
+	void SetHp(int hp);
+
+	int GetHp();
+
+	void IsCollision(bool isCollision);
+
+	bool IsPreCollision();
+
+	//無敵時間と攻撃を受けるときの切り替え
+	void SwitchState();
+
+	//攻撃
+	void Attack();
+
+	void SetPlayerPosition(Vector2 playerPosition);
+
 	bool IsClear();
 
-	//ゴールの場所
-	Vector2 actionGoalPosition = { 700.0f, (float)kGroundPosition };
-
-	Vector2 actionGoalSize = { 50.0f, 50.0f };
-
-	AABB actionGoalAABB;
-
 private:
-	Player* player_ = nullptr;
+	//弾
+	Bullet* bullet_ = nullptr;
 
-	//クリアしたか
+	Direction direction_ = Direction::kLeft;
+
+	const float kWidth_ = 32.0f;
+
+	const float kHeight_ = 64.0f;
+
+	//攻撃しているか
+	bool isAttack_ = false;
+
+	//攻撃するタイミングのタイマー
+	float attackTimer_ = 0.0f;
+
+	//体力
+	int hp_ = 100;
+
+	AABB aabb = {};
+
+	Vector2 position_ = {};
+
+	Vector2 velocity_ = {};
+
+	float moveTimer_ = 0;
+
+	unsigned int currentTime_ = 0;
+
 	bool isClear_ = false;
+
+	bool isCollision_ = false;
+	bool isPreCollision_ = false;
+
+	//プレイヤーの座標
+	Vector2 playerPosition_ = {};
+
+	int random_ = 0;
+
+	//無敵時間かどうか
+	bool isInvincibleTime_ = false;
+
+	//無敵時間のタイマー
+	float invincibleTimer_ = 0.0f;
+
+	//関数系
+	void Move();
+
 
 };

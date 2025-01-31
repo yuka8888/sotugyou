@@ -71,6 +71,9 @@
     <ClCompile Include="Boss.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -155,5 +158,6 @@
     <ClInclude Include="MapChipManager.h" />
     <ClInclude Include="ActionGame.h" />
     <ClInclude Include="Boss.h" />
+    <ClInclude Include="Bullet.h" />
   </ItemGroup>
 </Project>

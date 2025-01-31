@@ -1,34 +1,164 @@
 ﻿#include "ActionGame.h"
 
+ActionGame::ActionGame()
+{
+}
+
+ActionGame::~ActionGame()
+{
+	delete bullet_;
+}
+
 void ActionGame::Initialize()
 {
-	player_ = new Player;
-	player_->Initialize();
-	player_->SetTranslation(Vector2{ 50.0f, (float)kGroundPosition });
-
-	actionGoalAABB.max = { actionGoalPosition.x + actionGoalSize.x / 2.0f, actionGoalPosition.y + actionGoalSize.y / 2.0f };
-	actionGoalAABB.min = { actionGoalPosition.x - actionGoalSize.x / 2.0f, actionGoalPosition.y - actionGoalSize.y / 2.0f };
+	attackTimer_ = 0.0f;
+	bullet_ = new Bullet;
+	bullet_->Initialize();
+	isInvincibleTime_ = false;
+	invincibleTimer_ = 0.0f;
+	currentTime_ = (unsigned int)time(nullptr);
+	srand(currentTime_);
+	position_.y = kGroundPosition - kHeight_ / 2.0f;
+	position_.x = 400.0f;
+	aabb.max = { position_.x + kWidth_ / 2.0f, position_.y + kHeight_ / 2.0f };
+	aabb.min = { position_.x - kWidth_ / 2.0f, position_.y - kHeight_ / 2.0f };
+	direction_ = Direction::kRight;
+	isClear_ = false;
 }
 
 void ActionGame::Update()
 {
-	player_->ActionGameUpdate();
+	isPreCollision_ = isCollision_;
+	isCollision_ = false;
 
-	if (isCollision(player_->GetAABB(), actionGoalAABB)) {
+	//攻撃
+	Attack();
+
+	bullet_->Update();
+	//AABBの計算
+	aabb.max = { position_.x + kWidth_ / 2.0f, position_.y + kHeight_ / 2.0f };
+	aabb.min = { position_.x - kWidth_ / 2.0f, position_.y - kHeight_ / 2.0f };
+
+	//移動
+	Move();
+
+	if (hp_ <= 0) {
 		isClear_ = true;
 	}
 }
 
 void ActionGame::Draw()
 {
-	Novice::DrawBox(0, kGroundPosition, (int)kWindowWidth, 200, 0.0f, GREEN, kFillModeSolid);
+	//無敵かによって見た目変える
+	if (isInvincibleTime_) {
+		Novice::DrawBox(int(position_.x - kWidth_ / 2.0f), int(position_.y - kHeight_ / 2.0f), (int)kWidth_, (int)kHeight_, 0.0f, RED, kFillModeSolid);
+	}
+	else {
+		Novice::DrawBox(int(position_.x - kWidth_ / 2.0f), int(position_.y - kHeight_ / 2.0f), (int)kWidth_, (int)kHeight_, 0.0f, BLACK, kFillModeSolid);
+	}
 
-	Novice::DrawBox((int)actionGoalPosition.x, (int)actionGoalPosition.y, (int)actionGoalSize.x, (int)actionGoalSize.y, 0.0f, RED, kFillModeSolid);
+	bullet_->Draw();
 
-	player_->Draw();
+	ImGui::Begin("Enemy");
+	ImGui::DragInt("hp", &hp_, 1);
+	ImGui::DragFloat2("position", &position_.x, 0.1f);
+	ImGui::End();
+
+}
+
+AABB ActionGame::GetAABB()
+{
+	return aabb;
+}
+
+AABB ActionGame::GetBulletAABB()
+{
+	return bullet_->GetAABB();
+}
+
+void ActionGame::SetHp(int hp)
+{
+	hp_ = hp;
+}
+
+int ActionGame::GetHp()
+{
+	return hp_;
+}
+
+void ActionGame::IsCollision(bool isCollision)
+{
+	isCollision_ = isCollision;
+}
+
+bool ActionGame::IsPreCollision()
+{
+	return isPreCollision_;
+}
+
+void ActionGame::SwitchState()
+{
+	invincibleTimer_ += 0.01f;
+
+	//タイマーで無敵時間とそうじゃない時の切り替え
+	if (invincibleTimer_ >= 3.0f && isInvincibleTime_ == false) {
+		isInvincibleTime_ = true;
+		invincibleTimer_ = 0.0f;
+	}
+	else if (invincibleTimer_ >= 3.0f && isInvincibleTime_) {
+		isInvincibleTime_ = true;
+		invincibleTimer_ = 0.0f;
+	}
+}
+
+void ActionGame::Attack()
+{
+	//攻撃間隔
+	attackTimer_ += 0.01f;
+
+	//攻撃するタイミングになったら
+	if (attackTimer_ >= 2.0f) {
+		bullet_->SetIsAttack(true);
+		bullet_->SetPosition(position_);
+		bullet_->SetDirection(direction_);
+		attackTimer_ = 0.0f;
+	}
+}
+
+void ActionGame::SetPlayerPosition(Vector2 playerPosition)
+{
+	playerPosition_ = playerPosition;
 }
 
 bool ActionGame::IsClear()
 {
 	return isClear_;
 }
+
+void ActionGame::Move()
+{
+	moveTimer_ += 0.01f;
+
+	//左右の移動を一定時間でプレイヤーのいる方向に変える
+	if (position_.x < playerPosition_.x && moveTimer_ >= 3.0f) {
+		velocity_.x = 3.0f;
+		direction_ = Direction::kRight;
+		moveTimer_ = 0.0f;
+	}
+	else if (position_.x > playerPosition_.x && moveTimer_ >= 3.0f) {
+		velocity_.x = -3.0f;
+		direction_ = Direction::kLeft;
+		moveTimer_ = 0.0f;
+	}
+
+	position_ = position_ + velocity_;
+
+	if (position_.x >= kWindowWidth) {
+		position_.x = kWindowWidth;
+	}
+	else if (position_.x <= 0) {
+		position_.x = 0;
+	}
+
+}
+

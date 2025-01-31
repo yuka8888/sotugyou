@@ -1,12 +1,15 @@
 ﻿#pragma once
 #include "Novice.h"
 #include "mt.h"
+#include "Bullet.h"
 
 class MapChipManager;
 
 class Player
 {
 public:
+	~Player();
+
 	void Initialize();
 
 	void dicePhaseUpdate();
@@ -17,7 +20,7 @@ public:
 
 	void Draw();
 
-	void SetTranslation(Vector2 translation);
+	void SetPosition(Vector2 translation);
 
 	void SetPaths(Direction paths);
 
@@ -33,13 +36,13 @@ public:
 
 	void SetHp(int hp);
 
-	void SetDefense(int defense);
-
 	int GetAttack();
 
 	int GetHp();
 
-	int GetDefense();
+	AABB GetBulletAABB();
+
+	Vector2 GetPosition();
 
 	void IsCollision(bool isCollision_);
 
@@ -52,7 +55,7 @@ private:
 
 	MapChipManager* mapChipManager_ = nullptr;
 
-	Vector2 translation_ = { 100.0f, 100.0f };
+	Vector2 position_ = { 100.0f, 100.0f };
 
 	Vector2 velocity_ = {};
 
@@ -74,15 +77,21 @@ private:
 
 	float kHeight_ = 36.0f;
 
-	//ボス戦で使うステータス
+	//アクションゲームで使うステータス
 	//攻撃力
 	int attack_ = 1;
 
-	//防御力
-	int defense_ = 1;
-
 	//HP
 	int hp_ = 5;
+
+	//攻撃しているか
+	bool isAttack_ = false;
+
+	//攻撃
+	Bullet* bullet_ = nullptr;
+
+	//攻撃用のタイマー
+	float attackTimer_ = 0.0f;
 
 	//プレイヤーのマップチップでの座標
 	IndexSet mapChipPosition_;
@@ -90,7 +99,6 @@ private:
 	//サイコロの目
 	int dice_ = 0;
 
-	//アクションゲーム関連
 	//ジャンプしているか
 	bool isJump_ = false;
 
@@ -99,6 +107,9 @@ private:
 	/// </summary>
 	void Move();
 
-
+	/// <summary>
+	/// 攻撃
+	/// </summary>
+	void Attack();
 };
 

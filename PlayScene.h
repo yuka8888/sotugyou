@@ -21,11 +21,14 @@ public:
 
 	void Draw() override;
 
+	void Action();
+
 private:
 	//ゲームのフェーズ
 	enum class Phase {
 		dice, //すごろく
-		miniGame, //ミニゲーム
+		pazzle, //パズル
+		action, //アクション
 		boss, // ボス
 	};
 
@@ -78,7 +81,7 @@ private:
 	//サイコロを振っているか
 	bool isRollDice = false;
 
-	unsigned int currentTime;
+	unsigned int currentTime_;
 
 	bool isGoal = false;
 
@@ -87,8 +90,10 @@ private:
 	int goalBlockTexture_;
 	int noneBlockTexture_;
 	int puzzleBlockTexture_;
+	int actionBlockTexture_;
+	int itemBlockTexture_;
 
-	int rouletteTexture_;
+	int rouletteTexture_[7];
 	int backGroundTexture_;
 
 	//関数

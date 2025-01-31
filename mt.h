@@ -6,7 +6,8 @@
 
 enum class MapChipType {
 	kBlank,//空白
-	kminiGame,//ミニゲーム
+	kPazzle,//パズル
+	kAction, //アクション
 	kAitem, //アイテムもらえる
 	kNone, //特になし
 	kStart, //スタート

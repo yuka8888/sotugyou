@@ -16,11 +16,19 @@ void PlayScene::Initialize()
 	goalBlockTexture_ = Novice::LoadTexture("./Resources/goal.png");
 	noneBlockTexture_ = Novice::LoadTexture("./Resources/blank.png");
 	puzzleBlockTexture_ = Novice::LoadTexture("./Resources/puzzle.png");
-	rouletteTexture_ = Novice::LoadTexture("./Resources/roulette.png");
+	actionBlockTexture_ = Novice::LoadTexture("./Resources/enemyicon.png");
+	itemBlockTexture_ = Novice::LoadTexture("./Resources/itemicon.png");
+	rouletteTexture_[0] = Novice::LoadTexture("./Resources/roulette1.png");
+	rouletteTexture_[1] = Novice::LoadTexture("./Resources/roulette2.png");
+	rouletteTexture_[2] = Novice::LoadTexture("./Resources/roulette3.png");
+	rouletteTexture_[3] = Novice::LoadTexture("./Resources/roulette4.png");
+	rouletteTexture_[4] = Novice::LoadTexture("./Resources/roulette5.png");
+	rouletteTexture_[5] = Novice::LoadTexture("./Resources/roulette6.png");
+	rouletteTexture_[6] = Novice::LoadTexture("./Resources/roulette7.png");
 	backGroundTexture_ = Novice::LoadTexture("./Resources/background.png");
 
-	currentTime = (unsigned int)time(nullptr);
-	srand(currentTime);
+	currentTime_ = (unsigned int)time(nullptr);
+	srand(currentTime_);
 
 	fade_ = new Fade();
 	fade_->Initialize();
@@ -44,10 +52,12 @@ void PlayScene::Initialize()
 			//マップの取得
 			mapChipManager_->LoadMapChipCsv("Resources/map.csv");
 			//playerの初期位置の取得
-			player_->SetTranslation(mapChipManager_->GetStartPosition());
+			player_->SetPosition(mapChipManager_->GetStartPosition());
 
 			break;
-		case PlayScene::Phase::miniGame:
+		case PlayScene::Phase::action:
+			break;
+		case PlayScene::Phase::pazzle:
 			break;
 		case PlayScene::Phase::boss:
 
@@ -80,13 +90,21 @@ void PlayScene::Update()
 			player_->dicePhaseUpdate();
 
 			break;
-		case Phase::miniGame:
-			actionGame_->Update();
+
+		case Phase::action:
+			Action();
+
+			break;
+
+		case Phase::pazzle:
+			Action();
 
 			break;
 		case Phase::boss:
 			boss_->Update();
 			player_->BossUpdate();
+
+			boss_->SetPlayerPosition(player_->GetPosition());
 
 			//ボスとプレイヤーが当たったらダメージ
 			if (isCollision(player_->GetAABB(), boss_->GetAABB()) && !player_->IsPreCollision()) {
@@ -94,6 +112,14 @@ void PlayScene::Update()
 				player_->IsCollision(true);
 			}
 			else if (isCollision(player_->GetAABB(), boss_->GetAABB())) {
+				player_->IsCollision(true);
+			}
+			//ボスの弾とプレイヤーが当たったらダメージ
+			if (isCollision(player_->GetAABB(), boss_->GetBulletAABB()) && !player_->IsPreCollision()) {
+				player_->SetHp(player_->GetHp() - 1);
+				player_->IsCollision(true);
+			}
+			else if (isCollision(player_->GetAABB(), boss_->GetBulletAABB())) {
 				player_->IsCollision(true);
 			}
 
@@ -129,13 +155,18 @@ void PlayScene::Draw()
 			Novice::DrawSprite(0, 0, backGroundTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 			DrawMap();
 			player_->Draw();
-			Novice::DrawSprite(100, 550, rouletteTexture_, 1.0f, 1.0f, 0.0f, WHITE);
+			Novice::DrawSprite(100, 550, rouletteTexture_[dice], 1.0f, 1.0f, 0.0f, WHITE);
 
-#
 			ImGui::InputInt("dice", &dice);
 			break;
-		case Phase::miniGame:
+		case Phase::action:
 			actionGame_->Draw();
+			player_->Draw();
+
+			break;
+		case Phase::pazzle:
+			actionGame_->Draw();
+			player_->Draw();
 
 			break;
 		case Phase::boss:
@@ -146,6 +177,51 @@ void PlayScene::Draw()
 
 
 	fade_->Draw();
+
+}
+
+void PlayScene::Action()
+{
+
+	//アクションゲーム
+	actionGame_->Update();
+	player_->ActionGameUpdate();
+
+	actionGame_->SetPlayerPosition(player_->GetPosition());
+
+	//ボスとプレイヤーが当たったらダメージ
+	if (isCollision(player_->GetAABB(), actionGame_->GetAABB()) && !player_->IsPreCollision()) {
+		player_->SetHp(player_->GetHp() - 1);
+		player_->IsCollision(true);
+	}
+	else if (isCollision(player_->GetAABB(), actionGame_->GetAABB())) {
+		player_->IsCollision(true);
+	}
+	//ボスの弾とプレイヤーが当たったらダメージ
+	if (isCollision(player_->GetAABB(), actionGame_->GetBulletAABB()) && !player_->IsPreCollision()) {
+		player_->SetHp(player_->GetHp() - 1);
+		player_->IsCollision(true);
+	}
+	else if (isCollision(player_->GetAABB(), actionGame_->GetBulletAABB())) {
+		player_->IsCollision(true);
+	}
+	//ボスとプレイヤーの弾が当たったらダメージ
+	if (isCollision(player_->GetBulletAABB(), actionGame_->GetAABB()) && !actionGame_->IsPreCollision()) {
+		actionGame_->SetHp(actionGame_->GetHp() - player_->GetAttack());
+		actionGame_->IsCollision(true);
+	}
+	else if (isCollision(player_->GetBulletAABB(), actionGame_->GetAABB())) {
+		actionGame_->IsCollision(true);
+	}
+
+	//もしプレイヤーが死んだら
+	if (player_->GetHp() <= 0 && (fade_->GetStatus() == Fade::Status::FadeOut) && (fade_->IsFinished() == true)) {
+		sceneNo = kClear;
+	}
+	else if (player_->GetHp() <= 0 && fade_->IsFinished() == true) {
+		fade_->Start(Fade::Status::FadeOut, 1.0f);
+	}
+	
 
 }
 
@@ -163,12 +239,16 @@ void PlayScene::DrawMap()
 				case MapChipType::kBlank:
 					break;
 
-				case MapChipType::kminiGame:
+				case MapChipType::kPazzle:
 					Novice::DrawSprite(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), puzzleBlockTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 					break;
 
+				case MapChipType::kAction:
+					Novice::DrawSprite(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), actionBlockTexture_, 1.0f, 1.0f, 0.0f, WHITE);
+ 					break;
+
 				case MapChipType::kAitem:
-					Novice::DrawBox(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), int(kBlockWidth), int(kBlockHeight), 0.0f, RED, kFillModeSolid);
+					Novice::DrawSprite(int(j * kBlockWidth), int((numBlockVirtical - i - 1) * kBlockHeight), itemBlockTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 					break;
 
 				case MapChipType::kNone:
@@ -317,8 +397,8 @@ void PlayScene::ChangePhase()
 	switch (phase_)
 	{
 		case PlayScene::Phase::dice:
-			//フェーズをみにげーむに切り替え
-			if (dice_ == 0 && isRollDice && mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex, player_->GetMapChipPosition().yIndex) == MapChipType::kminiGame) {
+			//フェーズをパズルに切り替え
+			if (dice_ == 0 && isRollDice && mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex, player_->GetMapChipPosition().yIndex) == MapChipType::kPazzle) {
 				if (sugorokuTimer < 1.0f) {
 					sugorokuTimer += 0.03f;
 				}
@@ -327,7 +407,25 @@ void PlayScene::ChangePhase()
 				}
 				else if (fade_->IsFinished()) {
 					fade_->Start(Fade::Status::FadeIn, 1.0f);
-					phase_ = Phase::miniGame;
+					phase_ = Phase::pazzle;
+					player_->SetPosition({ 150.0f, 500.0f });
+					actionGame_->Initialize();
+					isRollDice = false;
+					sugorokuTimer = 0.0f;
+				}
+			}
+			//フェーズをアクションに切り替え
+			if (dice_ == 0 && isRollDice && mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex, player_->GetMapChipPosition().yIndex) == MapChipType::kAction) {
+				if (sugorokuTimer < 1.0f) {
+					sugorokuTimer += 0.03f;
+				}
+				else if (fade_->GetStatus() != Fade::Status::FadeOut) {
+					fade_->Start(Fade::Status::FadeOut, 1.0f);
+				}
+				else if (fade_->IsFinished()) {
+					fade_->Start(Fade::Status::FadeIn, 1.0f);
+					phase_ = Phase::action;
+					player_->SetPosition({ 150.0f, 500.0f });
 					actionGame_->Initialize();
 					isRollDice = false;
 					sugorokuTimer = 0.0f;
@@ -344,19 +442,16 @@ void PlayScene::ChangePhase()
 			}
 
 			break;
-		case PlayScene::Phase::miniGame:
-			//ミニゲームをクリアしたか
+		case PlayScene::Phase::action:
+			//アクションをクリアしたか
 			if (actionGame_->IsClear() && fade_->GetStatus() != Fade::Status::FadeOut) {
 				fade_->Start(Fade::Status::FadeOut, 1.0f);
 
 				//ランダムにステータス強化
-				random_ = rand() % 3;
+				random_ = rand() % 2;
 
 				if (random_ == 0) {
 					player_->SetAttack(player_->GetAttack() + 1);
-				}
-				else if (random_ == 1) {
-					player_->SetDefense(player_->GetDefense() + 1);
 				}
 				else {
 					player_->SetHp(player_->GetHp() + 1);

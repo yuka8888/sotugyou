@@ -6,11 +6,12 @@
 namespace {
 	std::map<std::string, MapChipType> mapChipTable = {
 		{"0", MapChipType::kBlank},
-		{"1", MapChipType::kminiGame},
-		{"2", MapChipType::kAitem},
-		{"3", MapChipType::kNone},
-		{"4", MapChipType::kStart},
-		{"5", MapChipType::kGoal},
+		{"1", MapChipType::kPazzle},
+		{"2", MapChipType::kAction},
+		{"3", MapChipType::kAitem},
+		{"4", MapChipType::kNone},
+		{"5", MapChipType::kStart},
+		{"6", MapChipType::kGoal},
 	};
 }
 
