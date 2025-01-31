@@ -7,6 +7,7 @@
 #include "ActionGame.h"
 #include "Boss.h"
 #include "time.h"
+#include "Puzzle.h"
 
 class PlayScene :public IScene
 {
@@ -47,6 +48,8 @@ private:
 	Boss* boss_ = nullptr;
 
 	ActionGame* actionGame_ = nullptr;
+
+	Puzzle* puzzle_ = nullptr;
 
 	//現在のフェーズ
 	Phase phase_ = Phase::dice;

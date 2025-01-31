@@ -27,6 +27,9 @@ void PlayScene::Initialize()
 	rouletteTexture_[6] = Novice::LoadTexture("./Resources/roulette7.png");
 	backGroundTexture_ = Novice::LoadTexture("./Resources/background.png");
 
+	puzzle_ = new Puzzle;
+	puzzle_->Initialize();
+
 	currentTime_ = (unsigned int)time(nullptr);
 	srand(currentTime_);
 
@@ -97,7 +100,7 @@ void PlayScene::Update()
 			break;
 
 		case Phase::pazzle:
-			Action();
+			puzzle_->Update();
 
 			break;
 		case Phase::boss:
@@ -165,8 +168,7 @@ void PlayScene::Draw()
 
 			break;
 		case Phase::pazzle:
-			actionGame_->Draw();
-			player_->Draw();
+			puzzle_->Draw();
 
 			break;
 		case Phase::boss:
@@ -465,6 +467,30 @@ void PlayScene::ChangePhase()
 				fade_->Start(Fade::Status::FadeIn, 1.0f);
 			}
 
+
+			break;
+		case PlayScene::Phase::pazzle:
+			//パズルをクリアしたか
+			if (puzzle_->IsClear() && fade_->GetStatus() != Fade::Status::FadeOut) {
+				fade_->Start(Fade::Status::FadeOut, 1.0f);
+
+				//ランダムにステータス強化
+				random_ = rand() % 2;
+
+				if (random_ == 0) {
+					player_->SetAttack(player_->GetAttack() + 1);
+				}
+				else {
+					player_->SetHp(player_->GetHp() + 1);
+				}
+
+			}
+			else if (fade_->GetStatus() == Fade::Status::FadeOut && fade_->IsFinished()) {
+				phase_ = Phase::dice;
+				delete puzzle_;
+				puzzle_ = new Puzzle;
+				fade_->Start(Fade::Status::FadeIn, 1.0f);
+			}
 
 			break;
 		case PlayScene::Phase::boss:
