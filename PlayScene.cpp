@@ -26,6 +26,7 @@ void PlayScene::Initialize()
 	rouletteTexture_[5] = Novice::LoadTexture("./Resources/roulette6.png");
 	rouletteTexture_[6] = Novice::LoadTexture("./Resources/roulette7.png");
 	backGroundTexture_ = Novice::LoadTexture("./Resources/background.png");
+	arrowTexture_ = Novice::LoadTexture("./Resources/arrow.png");
 
 	puzzle_ = new Puzzle;
 	puzzle_->Initialize();
@@ -261,48 +262,99 @@ void PlayScene::DrawMap()
 		}
 	}
 
-
+	if (isChoicePaths_) {
+		//分かれ道の矢印描画
+		for (uint32_t i = 0; i < pathsNum_; i++) {
+			if (paths_[i] == Direction::kDown) {
+				Novice::DrawSprite((int)mapChipManager_->GetMapChipPositionByIndex(player_->GetMapChipPosition().xIndex, player_->GetMapChipPosition().yIndex).x, (int)(mapChipManager_->GetMapChipPositionByIndex(player_->GetMapChipPosition().xIndex, (numBlockVirtical - player_->GetMapChipPosition().yIndex))).y, arrowTexture_, 1.0f, 1.0f, 0.0f, WHITE);
+			}
+			if (paths_[i] == Direction::kUp) {
+				Novice::DrawSprite((int)mapChipManager_->GetMapChipPositionByIndex(player_->GetMapChipPosition().xIndex, player_->GetMapChipPosition().yIndex).x, (int)(mapChipManager_->GetMapChipPositionByIndex(player_->GetMapChipPosition().xIndex, (numBlockVirtical - player_->GetMapChipPosition().yIndex) - 2)).y, arrowTexture_, 1.0f, 1.0f, 0.0f, WHITE);
+			}
+			if (paths_[i] == Direction::kRight) {
+				Novice::DrawSprite((int)mapChipManager_->GetMapChipPositionByIndex(player_->GetMapChipPosition().xIndex + 1, player_->GetMapChipPosition().yIndex).x, (int)(mapChipManager_->GetMapChipPositionByIndex(player_->GetMapChipPosition().xIndex, (numBlockVirtical - player_->GetMapChipPosition().yIndex) - 1)).y, arrowTexture_, 1.0f, 1.0f, 0.0f, WHITE);
+			}
+		}
+	}
 }
 
 void PlayScene::RollTheDice()
 {
 	if (!isChoicePaths_) {
 		//Aキーでサイコロを振る
-		if (keys[DIK_A] && !preKeys[DIK_A] && (fade_->IsFinished() == true) && !isRollDice) {
+		if (keys[DIK_A] && !preKeys[DIK_A] && (fade_->IsFinished() == true) && !isRollDice && dice_ == 0) {
 			dice_ = rand() % 6 + 1;
-			isRollDice = true;
+			diceAnimation_ = dice_;
+			isDiceAnimation_ = true;
+			sugorokuTimerAdd_ = 0.2f;
+			sugorokuAnimationNum_ = 0;
+		}
+
+		//ルーレットのアニメーション
+		if (isDiceAnimation_) {
+			sugorokuTimer += sugorokuTimerAdd_;
+			if (sugorokuTimer >= 0.6f && sugorokuAnimationNum_ <= 15) {
+				sugorokuTimer = 0.0f;
+				sugorokuAnimationNum_ += 1;
+				//ルーレットを１づつ変えてアニメーション
+				dice_ += 1;
+				if (dice_ > 6) {
+					dice_ = 1;
+				}
+			}
+			else if (sugorokuTimer >= 0.6f && sugorokuTimerAdd_ <= 0.06f && diceAnimation_ == dice_) {
+				isRollDice = true;
+				sugorokuAnimationNum_ = 0;
+				sugorokuTimer = 0.0f;
+				isDiceAnimation_ = false;
+			}
+			else if (sugorokuTimer >= 0.6f && sugorokuAnimationNum_ > 15) {
+				sugorokuTimer = 0.0f;
+				sugorokuAnimationNum_ += 1;
+				sugorokuTimerAdd_ -= 0.01f;
+				//ルーレットを１づつ変えてアニメーション
+				dice_ += 1;
+				if (dice_ > 6) {
+					dice_ = 1;
+				}
+			}
 		}
 
 		//サイコロの値が1より大きい時
-		if (dice_ > 0) {
-			//上下左右でどこに進めるのか調べる
-			if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex, player_->GetMapChipPosition().yIndex + 1) != MapChipType::kBlank) {
-				if (prePaths_ != Direction::kDown) {
-					paths_[pathsNum_] = Direction::kUp;
-					pathsNum_++;
+		if (dice_ > 0 && !isDiceAnimation_) {
+			if (pathsNum_ == 0) {
+				//上下左右でどこに進めるのか調べる
+				if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex, player_->GetMapChipPosition().yIndex + 1) != MapChipType::kBlank) {
+					if (prePaths_ != Direction::kDown) {
+						paths_[pathsNum_] = Direction::kUp;
+						pathsNum_++;
+					}
 				}
-			}
-			if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex, player_->GetMapChipPosition().yIndex - 1) != MapChipType::kBlank) {
-				if (prePaths_ != Direction::kUp) {
-					paths_[pathsNum_] = Direction::kDown;
-					pathsNum_++;
+				if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex, player_->GetMapChipPosition().yIndex - 1) != MapChipType::kBlank) {
+					if (prePaths_ != Direction::kUp) {
+						paths_[pathsNum_] = Direction::kDown;
+						pathsNum_++;
+					}
 				}
-			}
-			if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex + 1, player_->GetMapChipPosition().yIndex) != MapChipType::kBlank) {
-				if (prePaths_ != Direction::kLeft) {
-					paths_[pathsNum_] = Direction::kRight;
-					pathsNum_++;
+				if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex + 1, player_->GetMapChipPosition().yIndex) != MapChipType::kBlank) {
+					if (prePaths_ != Direction::kLeft) {
+						paths_[pathsNum_] = Direction::kRight;
+						pathsNum_++;
+					}
 				}
+				//if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex + 1, player_->GetMapChipPosition().yIndex) != MapChipType::kBlank) {
+				//	if (prePaths_ != Direction::kRight) {
+				//		paths_[pathsNum_] = Direction::kLeft;
+				//		pathsNum_++;
+				//	}
+				//}
 			}
-			//if (mapChipManager_->GetMapChipTypeByIndex(player_->GetMapChipPosition().xIndex + 1, player_->GetMapChipPosition().yIndex) != MapChipType::kBlank) {
-			//	if (prePaths_ != Direction::kRight) {
-			//		paths_[pathsNum_] = Direction::kLeft;
-			//		pathsNum_++;
-			//	}
-			//}
 
 			//進める場所が一つなら移動させる
-			if (pathsNum_ == 1) {
+			if (sugorokuTimer < 1.0f) {
+				sugorokuTimer += 0.03f;
+			}
+			else if (pathsNum_ == 1) {
 				player_->SetPaths(paths_[0]);
 				dice_--;
 				prePaths_ = paths_[0];
@@ -312,10 +364,12 @@ void PlayScene::RollTheDice()
 					paths_[i] = {};
 				}
 				pathsNum_ = 0;
+				sugorokuTimer = 0.0f;
 			}
 			else {
 				//複数あるときは選ばせる
 				isChoicePaths_ = true;
+				sugorokuTimer = 0.0f;
 			}
 
 		}

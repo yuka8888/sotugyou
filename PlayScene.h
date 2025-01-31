@@ -72,9 +72,12 @@ private:
 
 	//残り進める数
 	uint32_t dice_ = 0;
+	uint32_t diceAnimation_ = 0;
 
 	//すごろくで使うタイマー
 	float sugorokuTimer = 0.0f;
+	float sugorokuTimerAdd_ = 0.07f;
+	int sugorokuAnimationNum_ = 0;
 
 	//すごろくのマスの大きさ
 	float kBlockWidth = 0;
@@ -85,6 +88,8 @@ private:
 
 	//サイコロを振っているか
 	bool isRollDice = false;
+
+	bool isDiceAnimation_ = false;
 
 	unsigned int currentTime_;
 
@@ -97,6 +102,7 @@ private:
 	int puzzleBlockTexture_;
 	int actionBlockTexture_;
 	int itemBlockTexture_;
+	int arrowTexture_;
 
 	int rouletteTexture_[7];
 	int backGroundTexture_;
