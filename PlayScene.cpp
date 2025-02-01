@@ -159,8 +159,14 @@ void PlayScene::Draw()
 			Novice::DrawSprite(0, 0, backGroundTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 			DrawMap();
 			player_->Draw();
-			Novice::DrawSprite(100, 550, rouletteTexture_[dice], 1.0f, 1.0f, 0.0f, WHITE);
 
+			//ルーレット
+			if (dice_ == diceAnimation_ && int(sugorokuTimer / 0.5f) % 2 == 1) {
+				Novice::DrawSprite(100, 550, rouletteTexture_[0], 1.0f, 1.0f, 0.0f, WHITE);
+			}
+			else {
+				Novice::DrawSprite(100, 550, rouletteTexture_[dice], 1.0f, 1.0f, 0.0f, WHITE);
+			}
 			ImGui::InputInt("dice", &dice);
 			break;
 		case Phase::action:
@@ -293,7 +299,7 @@ void PlayScene::RollTheDice()
 		//ルーレットのアニメーション
 		if (isDiceAnimation_) {
 			sugorokuTimer += sugorokuTimerAdd_;
-			if (sugorokuTimer >= 0.6f && sugorokuAnimationNum_ <= 15) {
+			if (sugorokuTimer >= 0.5f && sugorokuAnimationNum_ <= 15) {
 				sugorokuTimer = 0.0f;
 				sugorokuAnimationNum_ += 1;
 				//ルーレットを１づつ変えてアニメーション
@@ -302,16 +308,18 @@ void PlayScene::RollTheDice()
 					dice_ = 1;
 				}
 			}
-			else if (sugorokuTimer >= 0.6f && sugorokuTimerAdd_ <= 0.06f && diceAnimation_ == dice_) {
+			else if (sugorokuTimer >= 0.5f && sugorokuTimerAdd_ <= 0.02f && diceAnimation_ == dice_) {
 				isRollDice = true;
 				sugorokuAnimationNum_ = 0;
 				sugorokuTimer = 0.0f;
 				isDiceAnimation_ = false;
 			}
-			else if (sugorokuTimer >= 0.6f && sugorokuAnimationNum_ > 15) {
+			else if (sugorokuTimer >= 0.5f && sugorokuAnimationNum_ > 15) {
 				sugorokuTimer = 0.0f;
 				sugorokuAnimationNum_ += 1;
-				sugorokuTimerAdd_ -= 0.01f;
+				if (sugorokuTimerAdd_ >= 0.01f) {
+					sugorokuTimerAdd_ -= 0.01f;
+				}
 				//ルーレットを１づつ変えてアニメーション
 				dice_ += 1;
 				if (dice_ > 6) {
@@ -351,7 +359,10 @@ void PlayScene::RollTheDice()
 			}
 
 			//進める場所が一つなら移動させる
-			if (sugorokuTimer < 1.0f) {
+			if (dice_ == diceAnimation_ && sugorokuTimer < 3.5f) {
+				sugorokuTimer += 0.03f;
+			}
+			else if (dice_ != diceAnimation_ && sugorokuTimer < 1.0f) {
 				sugorokuTimer += 0.03f;
 			}
 			else if (pathsNum_ == 1) {
@@ -473,6 +484,7 @@ void PlayScene::ChangePhase()
 					phase_ = Phase::action;
 					prePlayerPosition_ = player_->GetPosition();
 					player_->SetPosition({ 150.0f, 500.0f });
+					player_->SetHp(player_->GetMaxHp());
 					actionGame_->Initialize();
 					isRollDice = false;
 					sugorokuTimer = 0.0f;

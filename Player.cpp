@@ -130,6 +130,16 @@ int Player::GetHp()
 	return hp_;
 }
 
+int Player::GetMaxHp()
+{
+	return maxHp_;
+}
+
+void Player::SetMaxHp(int maxHp)
+{
+	maxHp_ = maxHp;
+}
+
 AABB Player::GetBulletAABB()
 {
 	return bullet_->GetAABB();

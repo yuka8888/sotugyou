@@ -40,6 +40,10 @@ public:
 
 	int GetHp();
 
+	int GetMaxHp();
+
+	void SetMaxHp(int maxHp);
+
 	AABB GetBulletAABB();
 
 	Vector2 GetPosition();
@@ -83,6 +87,7 @@ private:
 
 	//HP
 	int hp_ = 5;
+	int maxHp_ = 5;
 
 	//攻撃しているか
 	bool isAttack_ = false;
