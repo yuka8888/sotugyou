@@ -102,7 +102,9 @@ private:
 	int puzzleBlockTexture_;
 	int actionBlockTexture_;
 	int itemBlockTexture_;
-	int arrowTexture_;
+	int upArrowTexture_;
+	int downArrowTexture_;
+	int rightArrowTexture_;
 
 	int rouletteTexture_[7];
 	int backGroundTexture_;

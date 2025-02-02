@@ -90,6 +90,12 @@ Vector2 operator+(Vector2 num1, Vector2 num2);
 
 Vector2 operator-(Vector2 num1, Vector2 num2);
 
+Vector2 operator*(Vector2 num1, Vector2 num2);
+
+float Length(Vector2 const& obj);
+
+Vector2 Normalize(Vector2 const& obj);
+
 Matrix3x3 Multiply(Matrix3x3 matrix1, Matrix3x3 matrix2);
 
 Vector2 Transform(Vector2 vector, Matrix3x3 matrix);
@@ -115,6 +121,8 @@ bool isCollision(const AABB& aabb1, const AABB& aabb2);
 bool isCollision(const AABB& aabb, const Vector2& position);
 
 float easeInCubic(float x);
+
+AABB MakeAABB(Vector2 position, Vector2 size);
 
 /// <summary>
 /// 線形補間

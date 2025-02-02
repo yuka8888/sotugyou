@@ -3,14 +3,19 @@
 
 Player::~Player()
 {
-	delete bullet_;
+	for (int i = 0; i < kBulletNum; i++) {
+		delete bullet_[i];
+	}
 }
 
 void Player::Initialize()
 {
 	paths_ = Direction::kNone;
-	bullet_ = new Bullet;
-	bullet_->PlayerInitialize();
+	for (int i = 0; i < kBulletNum; i++) {
+		bullet_[i] = new Bullet;
+		bullet_[i]->PlayerInitialize();
+	}
+	playerShootingTexture_ = Novice::LoadTexture("./Resources/player_shooting.png");
 }
 
 void Player::dicePhaseUpdate()
@@ -33,7 +38,6 @@ void Player::dicePhaseUpdate()
 		paths_ = Direction::kNone;
 	}
 }
-
 void Player::ActionGameUpdate()
 {
 	// キー入力を受け取る
@@ -48,7 +52,6 @@ void Player::ActionGameUpdate()
 	Attack();
 
 	AnimationTimer();
-	bullet_->Update();
 
 	aabb_.max = { position_.x + kWidth_ / 2.0f, position_.y + kHeight_ / 2.0f };
 	aabb_.min = { position_.x - kWidth_ / 2.0f, position_.y - kHeight_ / 2.0f };
@@ -60,11 +63,26 @@ void Player::BossUpdate()
 	memcpy(preKeys, keys, 256);
 	Novice::GetHitKeyStateAll(keys);
 
-	Move();
+	BossMove();
 
-	aabb_.max = { position_.x + kWidth_ / 2.0f, position_.y + kHeight_ / 2.0f };
-	aabb_.min = { position_.x - kWidth_ / 2.0f, position_.y - kHeight_ / 2.0f };
+	AnimationTimer();
 
+	if (attackUpNum_ >= 10) {
+		coolTime_ = 0.5f;
+		isStrongAttack_ = true;
+	}
+	else if (attackUpNum_ >= 7) {
+		coolTime_ = 1.0f;
+		isStrongAttack_ = true;
+	}
+	else if (attackUpNum_ >= 5) {
+		coolTime_ = 1.0f;
+	}
+	else if (attackUpNum_ >= 3) {
+		coolTime_ = 1.5f;
+	}
+
+	aabb_ = MakeAABB(position_, { kWidth_, kHeight_ });
 }
 
 void Player::Draw()
@@ -72,7 +90,7 @@ void Player::Draw()
 	Novice::DrawBox(int(position_.x - kWidth_ / 2.0f), int(position_.y - kHeight_ / 2.0f), (int)kWidth_, (int)kHeight_, 0.0f, BLUE, kFillModeSolid);
 
 	if (direction_ == kRight) {
-		Novice::DrawSpriteRect(int(position_.x - kWidth_ / 2.0f), int(position_.y - kHeight_ / 2.0f), int(kWidth_ * int(textureTimer_ / 30)), 0, 
+		Novice::DrawSpriteRect(int(position_.x - kWidth_ / 2.0f), int(position_.y - kHeight_ / 2.0f), int(kWidth_ * int(textureTimer_ / 30)), 0,
 			int(kWidth_), int(kHeight_), playerRightTexture_, (kWidth_ / (kWidth_ * 2)), 1.0f, 0.0f, WHITE);
 	}
 	else if (direction_ == kLeft) {
@@ -80,13 +98,26 @@ void Player::Draw()
 			int(kWidth_), int(kHeight_), playerLeftTexture_, (kWidth_ / (kWidth_ * 2)), 1.0f, 0.0f, WHITE);
 	}
 
-	bullet_->Draw();
+	for (int i = 0; i < kBulletNum; i++) {
+		bullet_[i]->Draw();
+	}
 
 	ImGui::Begin("Player");
 	ImGui::DragInt("Attack", &attack_, 1);
 	ImGui::DragInt("hp", &hp_, 1);
 	ImGui::DragFloat2("position", &position_.x, 0.1f);
 	ImGui::End();
+}
+
+void Player::BossDraw()
+{
+	for (int i = 0; i < kBulletNum; i++) {
+		bullet_[i]->Draw();
+	}
+
+	Novice::DrawSprite(int(position_.x - kWidth_ / 2.0f), int(position_.y - kHeight_ / 2.0f), playerShootingTexture_, 1.0f, 1.0f, 0.0f, WHITE);
+
+	ImGui::InputInt("PlayerHp", &hp_, 1);
 }
 
 void Player::SetPosition(Vector2 translation)
@@ -150,9 +181,9 @@ void Player::SetMaxHp(int maxHp)
 	maxHp_ = maxHp;
 }
 
-AABB Player::GetBulletAABB()
+AABB Player::GetBulletAABB(int i)
 {
-	return bullet_->GetAABB();
+	return bullet_[i]->GetAABB();
 }
 
 Vector2 Player::GetPosition()
@@ -170,13 +201,39 @@ bool Player::IsPreCollision()
 	return isPreCollision_;
 }
 
-void Player::AnimationTimer()
+bool Player::IsBulletCollision(int i)
 {
-	//アニメーションタイマー
-	textureTimer_++;
-	if (textureTimer_ >= 60) {
-		textureTimer_ = 0;
-	}
+	return bullet_[i]->IsCollision();
+}
+
+void Player::IsBulletCollision(bool isBulletCollision, int i)
+{
+	bullet_[i]->IsCollision(isBulletCollision);
+}
+
+bool Player::IsBulletDraw(int i)
+{
+	return bullet_[i]->IsAttack();
+}
+
+void Player::IsBulletDraw(bool isBulletDraw, int i)
+{
+	bullet_[i]->IsAttack(isBulletDraw);
+}
+
+int Player::GetBulletNum()
+{
+	return kBulletNum;
+}
+
+int Player::GetAttackUpNum_()
+{
+	return attackUpNum_;
+}
+
+void Player::SetAttackUpNum_(int attackUpNum)
+{
+	attackUpNum_ = attackUpNum;
 }
 
 
@@ -224,23 +281,124 @@ void Player::Move()
 
 }
 
+void Player::BossMove()
+{
+	velocity_ = {};
+
+	//移動
+	if (Novice::CheckHitKey(DIK_A) || Novice::CheckHitKey(DIK_LEFTARROW)) {
+		direction_ = Direction::kLeft;
+		velocity_.x = -1.0f;
+	}
+	if (Novice::CheckHitKey(DIK_D) || Novice::CheckHitKey(DIK_RIGHTARROW)) {
+		direction_ = Direction::kRight;
+		velocity_.x = 1.0f;
+	}
+	if (Novice::CheckHitKey(DIK_W) || Novice::CheckHitKey(DIK_UPARROW)) {
+		direction_ = Direction::kUp;
+		velocity_.y = -1.0f;
+	}
+	if (Novice::CheckHitKey(DIK_S) || Novice::CheckHitKey(DIK_DOWNARROW)) {
+		direction_ = Direction::kDown;
+		velocity_.y = 1.0f;
+	}
+
+	velocity_ = Normalize(velocity_) * Vector2 { speed_, speed_ };
+
+	BossAttack();
+
+	position_ = position_ + velocity_;
+
+	if (position_.x < kWidth_ / 2.0f) {
+		position_.x = kWidth_ / 2.0f;
+	}
+	if (position_.x > 700.0f) {
+		position_.x = 700.0f;
+	}
+	if (position_.y < kHeight_ / 2.0f) {
+		position_.y = kHeight_ / 2.0f;
+	}
+	if (position_.y > 720.0f - kHeight_ / 2.0f) {
+		position_.y = 720.0f - kHeight_ / 2.0f;
+	}
+}
+
 void Player::Attack()
 {
-	//スペースキーで攻撃
-	if (keys[DIK_SPACE] && !preKeys[DIK_SPACE] && !isAttack_) {
-		isAttack_ = true;
-		bullet_->SetIsAttack(true);
-		bullet_->SetPosition(position_);
-		bullet_->SetDirection(direction_);
+	for (int i = 0; i < kBulletNum; i++) {
+		//スペースキーで攻撃
+		if (keys[DIK_SPACE] && !preKeys[DIK_SPACE] && !bullet_[i]->IsAttack()) {
+			isAttack_ = true;
+			bullet_[i]->IsAttack(true);
+			bullet_[i]->SetPosition(position_);
+			bullet_[i]->SetDirection(direction_);
+			break;
+		}
+
 	}
 
 	//攻撃中
 	if (isAttack_) {
-		attackTimer_ += 0.01f;
+		attackTimer_ += 0.04f;
 		//クールタイム
-		if (attackTimer_ >= 0.5f) {
+		if (attackTimer_ >= coolTime_) {
 			isAttack_ = false;
 			attackTimer_ = 0.0f;
 		}
+	}
+
+	for (int i = 0; i < kBulletNum; i++) {
+		bullet_[i]->Update();
+	}
+
+}
+
+void Player::BossAttack()
+{
+	//スペースキーで攻撃
+	for (int i = 0; i < kBulletNum; i++) {
+		if (keys[DIK_SPACE] && !preKeys[DIK_SPACE] && !isAttack_ && !bullet_[i]->IsAttack()) {
+			if (isStrongAttack_) {
+				isAttack_ = true;
+				bullet_[i]->IsAttack(true);
+				bullet_[(i + kBulletNum / 2) % kBulletNum]->IsAttack(true);
+				bullet_[i]->SetPosition(position_ + Vector2{ 0.0f, -8.0f });
+				bullet_[(i + kBulletNum / 2) % kBulletNum]->SetPosition(position_ + Vector2{ 0.0f, 8.0f });
+				bullet_[i]->SetDirection(Direction::kRight);
+				bullet_[(i + kBulletNum / 2) % kBulletNum]->SetDirection(Direction::kRight);
+			}
+			else {
+				isAttack_ = true;
+				bullet_[i]->IsAttack(true);
+				bullet_[i]->SetPosition(position_ + Vector2{ 0.0f, 0.0f });
+				bullet_[i]->SetDirection(Direction::kRight);
+			}
+			break;
+		}
+	}
+
+	for (int i = 0; i < kBulletNum; i++) {
+		bullet_[i]->Update();
+	}
+
+	//攻撃中
+	if (isAttack_) {
+		attackTimer_ += 0.03f;
+		//クールタイム
+		if (attackTimer_ >= coolTime_) {
+			isAttack_ = false;
+			attackTimer_ = 0.0f;
+		}
+	}
+
+
+}
+
+void Player::AnimationTimer()
+{
+	//アニメーションタイマー
+	textureTimer_++;
+	if (textureTimer_ >= 60) {
+		textureTimer_ = 0;
 	}
 }

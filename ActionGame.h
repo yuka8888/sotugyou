@@ -59,7 +59,7 @@ private:
 	float attackTimer_ = 0.0f;
 
 	//体力
-	int hp_ = 100;
+	int hp_ = 10;
 
 	AABB aabb = {};
 

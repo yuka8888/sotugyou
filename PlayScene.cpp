@@ -29,7 +29,9 @@ void PlayScene::Initialize()
 	rouletteTexture_[5] = Novice::LoadTexture("./Resources/roulette6.png");
 	rouletteTexture_[6] = Novice::LoadTexture("./Resources/roulette7.png");
 	backGroundTexture_ = Novice::LoadTexture("./Resources/background.png");
-	arrowTexture_ = Novice::LoadTexture("./Resources/arrow.png");
+	upArrowTexture_ = Novice::LoadTexture("./Resources/arrow.png");
+	downArrowTexture_ = Novice::LoadTexture("./Resources/arrowr3.png");
+	rightArrowTexture_ = Novice::LoadTexture("./Resources/arrowr2.png");
 
 	puzzle_ = new Puzzle;
 	puzzle_->Initialize();
@@ -189,11 +191,11 @@ void PlayScene::Action()
 		player_->IsCollision(true);
 	}
 	//ボスとプレイヤーの弾が当たったらダメージ
-	if (isCollision(player_->GetBulletAABB(), actionGame_->GetAABB()) && !actionGame_->IsPreCollision()) {
+	if (isCollision(player_->GetBulletAABB(0), actionGame_->GetAABB()) && !actionGame_->IsPreCollision()) {
 		actionGame_->SetHp(actionGame_->GetHp() - player_->GetAttack());
 		actionGame_->IsCollision(true);
 	}
-	else if (isCollision(player_->GetBulletAABB(), actionGame_->GetAABB())) {
+	else if (isCollision(player_->GetBulletAABB(0), actionGame_->GetAABB())) {
 		actionGame_->IsCollision(true);
 	}
 
@@ -246,13 +248,13 @@ void PlayScene::DrawMap()
 		//分かれ道の矢印描画
 		for (uint32_t i = 0; i < pathsNum_; i++) {
 			if (paths_[i] == Direction::kDown) {
-				Novice::DrawSprite((int)mapChipManager_->GetMapChipPositionByIndex(player_->GetMapChipPosition().xIndex, player_->GetMapChipPosition().yIndex).x, (int)(mapChipManager_->GetMapChipPositionByIndex(player_->GetMapChipPosition().xIndex, (numBlockVirtical - player_->GetMapChipPosition().yIndex))).y, arrowTexture_, 1.0f, 1.0f, 0.0f, WHITE);
+				Novice::DrawSprite((int)mapChipManager_->GetMapChipPositionByIndex(player_->GetMapChipPosition().xIndex, player_->GetMapChipPosition().yIndex).x, (int)(mapChipManager_->GetMapChipPositionByIndex(player_->GetMapChipPosition().xIndex, (numBlockVirtical - player_->GetMapChipPosition().yIndex))).y, downArrowTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 			}
 			if (paths_[i] == Direction::kUp) {
-				Novice::DrawSprite((int)mapChipManager_->GetMapChipPositionByIndex(player_->GetMapChipPosition().xIndex, player_->GetMapChipPosition().yIndex).x, (int)(mapChipManager_->GetMapChipPositionByIndex(player_->GetMapChipPosition().xIndex, (numBlockVirtical - player_->GetMapChipPosition().yIndex) - 2)).y, arrowTexture_, 1.0f, 1.0f, 0.0f, WHITE);
+				Novice::DrawSprite((int)mapChipManager_->GetMapChipPositionByIndex(player_->GetMapChipPosition().xIndex, player_->GetMapChipPosition().yIndex).x, (int)(mapChipManager_->GetMapChipPositionByIndex(player_->GetMapChipPosition().xIndex, (numBlockVirtical - player_->GetMapChipPosition().yIndex) - 2)).y, upArrowTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 			}
 			if (paths_[i] == Direction::kRight) {
-				Novice::DrawSprite((int)mapChipManager_->GetMapChipPositionByIndex(player_->GetMapChipPosition().xIndex + 1, player_->GetMapChipPosition().yIndex).x, (int)(mapChipManager_->GetMapChipPositionByIndex(player_->GetMapChipPosition().xIndex, (numBlockVirtical - player_->GetMapChipPosition().yIndex) - 1)).y, arrowTexture_, 1.0f, 1.0f, 0.0f, WHITE);
+				Novice::DrawSprite((int)mapChipManager_->GetMapChipPositionByIndex(player_->GetMapChipPosition().xIndex + 1, player_->GetMapChipPosition().yIndex).x, (int)(mapChipManager_->GetMapChipPositionByIndex(player_->GetMapChipPosition().xIndex, (numBlockVirtical - player_->GetMapChipPosition().yIndex) - 1)).y, rightArrowTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 			}
 		}
 	}
@@ -481,14 +483,7 @@ void PlayScene::ChangePhase()
 				fade_->Start(Fade::Status::FadeOut, 1.0f);
 
 				//ランダムにステータス強化
-				random_ = rand() % 2;
-
-				if (random_ == 0) {
-					player_->SetAttack(player_->GetAttack() + 1);
-				}
-				else {
-					player_->SetHp(player_->GetHp() + 1);
-				}
+				player_->SetAttackUpNum_(player_->GetAttackUpNum_() + 1);
 
 			}
 			//アクションをクリアできなかった
@@ -502,6 +497,9 @@ void PlayScene::ChangePhase()
 				actionGame_ = new ActionGame;
 				actionGame_->Initialize();
 				player_->SetPosition(prePlayerPosition_);
+				for (int i = 0; i < player_->GetBulletNum(); i++) {
+					player_->IsBulletDraw(false, i);
+				}
 				fade_->Start(Fade::Status::FadeIn, 1.0f);
 			}
 
@@ -513,14 +511,7 @@ void PlayScene::ChangePhase()
 				fade_->Start(Fade::Status::FadeOut, 1.0f);
 
 				//ランダムにステータス強化
-				random_ = rand() % 2;
-
-				if (random_ == 0) {
-					player_->SetAttack(player_->GetAttack() + 1);
-				}
-				else {
-					player_->SetHp(player_->GetHp() + 1);
-				}
+				player_->SetAttackUpNum_(player_->GetAttackUpNum_() + 1);
 
 			}
 			//パズルをクリアできなかった

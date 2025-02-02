@@ -20,6 +20,8 @@ public:
 
 	void Draw();
 
+	void BossDraw();
+
 	void SetPosition(Vector2 translation);
 
 	void SetPaths(Direction paths);
@@ -44,13 +46,25 @@ public:
 
 	void SetMaxHp(int maxHp);
 
-	AABB GetBulletAABB();
+	AABB GetBulletAABB(int i);
 
 	Vector2 GetPosition();
 
 	void IsCollision(bool isCollision_);
 
 	bool IsPreCollision();
+
+	bool IsBulletCollision(int i);
+	void IsBulletCollision(bool isBulletCollision, int i);
+
+	bool IsBulletDraw(int i);
+	void IsBulletDraw(bool isBulletDraw, int i);
+
+	int GetBulletNum();
+
+	int GetAttackUpNum_();
+
+	void SetAttackUpNum_(int attackUpNum);
 
 	void AnimationTimer();
 private:
@@ -66,7 +80,7 @@ private:
 
 	Vector2 acceleration_ = {};
 
-	AABB aabb_;
+	AABB aabb_ = {};
 
 	bool isGround_ = true;
 
@@ -82,6 +96,8 @@ private:
 
 	float kHeight_ = 64.0f;
 
+	float speed_ = 5.0f;
+
 	//アクションゲームで使うステータス
 	//攻撃力
 	int attack_ = 1;
@@ -94,10 +110,15 @@ private:
 	bool isAttack_ = false;
 
 	//攻撃
-	Bullet* bullet_ = nullptr;
+	static const int kBulletNum = 20;
+	Bullet* bullet_[kBulletNum];
 
 	//攻撃用のタイマー
 	float attackTimer_ = 0.0f;
+
+	float coolTime_ = 2.0f;
+
+	bool isStrongAttack_ = false;
 
 	//プレイヤーのマップチップでの座標
 	IndexSet mapChipPosition_;
@@ -108,16 +129,23 @@ private:
 	//ジャンプしているか
 	bool isJump_ = false;
 
+	int playerShootingTexture_;
+
+	int attackUpNum_ = 0;
+
 	/// <summary>
 	/// 移動
 	/// </summary>
 	void Move();
+
+	void BossMove();
 
 	/// <summary>
 	/// 攻撃
 	/// </summary>
 	void Attack();
 
+	void BossAttack();
 
 	//画像
 	int playerRightTexture_ = Novice::LoadTexture("./Resources/player_action_right.png");

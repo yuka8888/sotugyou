@@ -4,6 +4,7 @@
 #include "time.h"
 #include "Bullet.h"
 #include "Enemy.h"
+#include "Boss.h"
 
 class Player;
 class Shooting
@@ -19,12 +20,25 @@ public:
 
 	void SetPlayer(Player* player);
 
+	bool IsClear();
+
+	bool IsGameOver();
+
 private:
 	Player* player_ = nullptr;
 
-	static const int kEnemyNum = 10;
+	Boss* boss_ = nullptr;
+
+	static const int kEnemyNum = 15;
 
 	Enemy* enemy_[kEnemyNum];
-	
+
+	float spawnTimer = 0.0f;
+
+	bool isClear_ = false;
+
+	bool isGameOver_ = false;
+
+	void Collision();
 };
 

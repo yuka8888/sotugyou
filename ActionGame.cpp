@@ -127,8 +127,8 @@ void ActionGame::Attack()
 	attackTimer_ += 0.01f;
 
 	//攻撃するタイミングになったら
-	if (attackTimer_ >= 2.0f) {
-		bullet_->SetIsAttack(true);
+	if (attackTimer_ >= 1.0f) {
+		bullet_->IsAttack(true);
 		bullet_->SetPosition(position_);
 		bullet_->SetDirection(direction_);
 		attackTimer_ = 0.0f;
@@ -159,12 +159,12 @@ void ActionGame::Move()
 	moveTimer_ += 0.01f;
 
 	//左右の移動を一定時間でプレイヤーのいる方向に変える
-	if (position_.x < playerPosition_.x && moveTimer_ >= 3.0f) {
+	if (position_.x < playerPosition_.x && moveTimer_ >= 1.0f) {
 		velocity_.x = 3.0f;
 		direction_ = Direction::kRight;
 		moveTimer_ = 0.0f;
 	}
-	else if (position_.x > playerPosition_.x && moveTimer_ >= 3.0f) {
+	else if (position_.x > playerPosition_.x && moveTimer_ >= 1.0f) {
 		velocity_.x = -3.0f;
 		direction_ = Direction::kLeft;
 		moveTimer_ = 0.0f;

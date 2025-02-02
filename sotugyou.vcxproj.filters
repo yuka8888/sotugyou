@@ -80,6 +80,9 @@
     <ClCompile Include="Enemy.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
+    <ClCompile Include="Boss.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\KamataEngine\DirectXGame\audio\Audio.h">
@@ -167,5 +170,10 @@
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Puzzle.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="Boss.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="sotugyou.rc" />
   </ItemGroup>
 </Project>

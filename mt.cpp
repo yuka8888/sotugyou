@@ -14,6 +14,45 @@ Vector2 operator-(Vector2 num1, Vector2 num2) {
 	return num1;
 }
 
+Vector2 operator*(Vector2 num1, Vector2 num2)
+{
+	num1.x *= num2.x;
+	num1.y *= num2.y;
+
+	return num1;
+}
+
+/// <summary>
+/// 最短距離
+/// </summary>
+/// <param name="obj"></param>
+/// <returns></returns>
+float Length(Vector2 const& obj) {
+	return sqrtf(obj.x * obj.x + obj.y * obj.y);
+}
+
+/// <summary>
+/// 正規化
+/// </summary>
+/// <param name="obj"></param>
+/// <returns></returns>
+Vector2 Normalize(Vector2 const& obj) {
+	float length = 0;
+	Vector2 newObj = {};
+
+	length = Length(obj);
+
+	newObj.x = obj.x;
+	newObj.y = obj.y;
+
+	if (length != 0.0f) {
+		newObj.x = obj.x / length;
+		newObj.y = obj.y / length;
+	}
+	return newObj;
+}
+
+
 /// <summary>
 /// 行列の積
 /// </summary>
@@ -241,6 +280,16 @@ bool isCollision(const AABB& aabb, const Vector2& position)
 //イージング
 float easeInCubic(float x) {
 	return x * x * x;
+}
+
+AABB MakeAABB(Vector2 position, Vector2 size)
+{
+	AABB aabb = {};
+	aabb.max.x = position.x + size.x / 2.0f;
+	aabb.max.y = position.y + size.y / 2.0f;
+	aabb.min.x = position.x - size.x / 2.0f;
+	aabb.min.y = position.y - size.y / 2.0f;
+	return aabb;
 }
 
 /// <summary>
