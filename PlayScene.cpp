@@ -6,6 +6,9 @@ PlayScene::PlayScene()
 
 PlayScene::~PlayScene()
 {
+	delete shooting_;
+	delete puzzle_;
+	delete player_;
 	delete fade_;
 }
 
@@ -31,6 +34,9 @@ void PlayScene::Initialize()
 	puzzle_ = new Puzzle;
 	puzzle_->Initialize();
 
+	shooting_ = new Shooting;
+	shooting_->Initialize();
+
 	currentTime_ = (unsigned int)time(nullptr);
 	srand(currentTime_);
 
@@ -46,9 +52,6 @@ void PlayScene::Initialize()
 
 	actionGame_ = new ActionGame;
 	actionGame_->Initialize();
-
-	boss_ = new Boss;
-	boss_->Initialize();
 
 	switch (phase_)
 	{
@@ -99,42 +102,14 @@ void PlayScene::Update()
 			Action();
 
 			break;
+			
 
 		case Phase::pazzle:
 			puzzle_->Update();
 
 			break;
 		case Phase::boss:
-			boss_->Update();
-			player_->BossUpdate();
-
-			boss_->SetPlayerPosition(player_->GetPosition());
-
-			//ボスとプレイヤーが当たったらダメージ
-			if (isCollision(player_->GetAABB(), boss_->GetAABB()) && !player_->IsPreCollision()) {
-				player_->SetHp(player_->GetHp() - 1);
-				player_->IsCollision(true);
-			}
-			else if (isCollision(player_->GetAABB(), boss_->GetAABB())) {
-				player_->IsCollision(true);
-			}
-			//ボスの弾とプレイヤーが当たったらダメージ
-			if (isCollision(player_->GetAABB(), boss_->GetBulletAABB()) && !player_->IsPreCollision()) {
-				player_->SetHp(player_->GetHp() - 1);
-				player_->IsCollision(true);
-			}
-			else if (isCollision(player_->GetAABB(), boss_->GetBulletAABB())) {
-				player_->IsCollision(true);
-			}
-
-
-			//もしプレイヤーが死んだら
-			if (player_->GetHp() <= 0 && (fade_->GetStatus() == Fade::Status::FadeOut) && (fade_->IsFinished() == true)) {
-				sceneNo = kClear;
-			}
-			else if (player_->GetHp() <= 0 && fade_->IsFinished() == true) {
-				fade_->Start(Fade::Status::FadeOut, 1.0f);
-			}
+			shooting_->Update();
 			break;
 
 	}
@@ -179,8 +154,7 @@ void PlayScene::Draw()
 
 			break;
 		case Phase::boss:
-			player_->Draw();
-			boss_->Draw();
+			shooting_->Draw();
 			break;
 	}
 
@@ -299,7 +273,7 @@ void PlayScene::RollTheDice()
 		//ルーレットのアニメーション
 		if (isDiceAnimation_) {
 			sugorokuTimer += sugorokuTimerAdd_;
-			if (sugorokuTimer >= 0.5f && sugorokuAnimationNum_ <= 15) {
+			if (sugorokuTimer >= 0.5f && sugorokuAnimationNum_ <= 10) {
 				sugorokuTimer = 0.0f;
 				sugorokuAnimationNum_ += 1;
 				//ルーレットを１づつ変えてアニメーション
@@ -314,7 +288,7 @@ void PlayScene::RollTheDice()
 				sugorokuTimer = 0.0f;
 				isDiceAnimation_ = false;
 			}
-			else if (sugorokuTimer >= 0.5f && sugorokuAnimationNum_ > 15) {
+			else if (sugorokuTimer >= 0.5f && sugorokuAnimationNum_ > 10) {
 				sugorokuTimer = 0.0f;
 				sugorokuAnimationNum_ += 1;
 				if (sugorokuTimerAdd_ >= 0.01f) {

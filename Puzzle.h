@@ -28,12 +28,12 @@ private:
 
 
 
-	int correctPuzzle1[4][4] = { {1,1,1,1},
+	int correctPuzzle[4][4] = { {1,1,1,1},
 						 {1,0,0,1},
 						 {1,0,0,1},
 						 {1,1,1,1} };
 
-	int changePuzzle1[4][4] = { {1,1,1,1},
+	int changePuzzle[4][4] = { {1,1,1,1},
 						  {1,0,0,1},
 						  {1,0,1,0},
 						  {1,1,0,0} };

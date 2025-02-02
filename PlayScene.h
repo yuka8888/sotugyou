@@ -5,7 +5,7 @@
 #include "Player.h"
 #include "MapChipManager.h"
 #include "ActionGame.h"
-#include "Boss.h"
+#include "Shooting.h"
 #include "time.h"
 #include "Puzzle.h"
 
@@ -45,9 +45,9 @@ private:
 
 	Player* player_ = nullptr;
 
-	Boss* boss_ = nullptr;
-
 	ActionGame* actionGame_ = nullptr;
+
+	Shooting* shooting_ = nullptr;
 
 	Puzzle* puzzle_ = nullptr;
 

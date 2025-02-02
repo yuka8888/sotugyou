@@ -14,6 +14,12 @@ enum class MapChipType {
 	kGoal, //ゴール
 };
 
+enum Type {
+	kNormal, //普通
+	kTraching, //追尾
+	kRush, //突進
+};
+
 enum Corner {
 	kRightBottom, // 右下
 	kLeftBottom,  // 左下

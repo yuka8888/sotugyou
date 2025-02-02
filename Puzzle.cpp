@@ -86,17 +86,17 @@ void Puzzle::CheckPuzzle()
 		}
 	}
 
+	if (keys[DIK_SPACE]) {
+		isGameOver_ = false;
+	}
+
+	isClear_ = true;
+
 	//すべて一致していたらクリア
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
-			if (isMatch_[i][j] == true) {
-
-				isClear_ = true;
-			}
-			else {
+			if (!isMatch_[i][j])
 				isClear_ = false;
-				break;
-			}
 		}
 	}
 

@@ -77,9 +77,9 @@ private:
 
 	Direction paths_ = Direction::kNone;
 
-	float kWidth_ = 36.0f;
+	float kWidth_ = 32.0f;
 
-	float kHeight_ = 36.0f;
+	float kHeight_ = 32.0f;
 
 	//アクションゲームで使うステータス
 	//攻撃力
