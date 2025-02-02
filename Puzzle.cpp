@@ -21,6 +21,8 @@ void Puzzle::Draw()
 {
 	//背景描画
 	Novice::DrawSprite(0, 0, bgTexture_, 1.0f, 1.0f, 0.0f, WHITE);
+	Novice::DrawSprite(0, 0,manualTexture_, 1.0f, 1.0f, 0.0f, WHITE);
+	Novice::DrawSprite(800, 0, puzzle_exTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 
 	//お手本描画
 	for (int i = 0; i < 4; i++) {

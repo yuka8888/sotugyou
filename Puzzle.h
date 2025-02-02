@@ -98,6 +98,8 @@ private:
 	int cherryTexture_ = Novice::LoadTexture("./Resources/cherry.png");
 	int frameTexture_ = Novice::LoadTexture("./Resources/frame.png");
 	int bgTexture_ = Novice::LoadTexture("./Resources/puzzle_bg.png");
-
+	int manualTexture_ = Novice::LoadTexture("./Resources/puzzle_sousa.png");
+	int puzzle_exTexture_ = Novice::LoadTexture("./Resources/puzzle_ex.png");
+	
 };
 
