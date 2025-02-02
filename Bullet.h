@@ -9,6 +9,10 @@ public:
 
 	void Initialize();
 
+	void PlayerInitialize();
+
+	void SlimeInitialize();
+
 	void Update();
 
 	void Draw();
@@ -23,6 +27,8 @@ public:
 
 	AABB GetAABB();
 
+
+
 private:
 	bool isAttack_ = false;
 
@@ -35,5 +41,7 @@ private:
 	Direction direction_ = Direction::kLeft;
 
 	AABB aabb_ = {};
+
+	int bulletTexture_;
 };
 

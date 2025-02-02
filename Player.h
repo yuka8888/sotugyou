@@ -52,6 +52,7 @@ public:
 
 	bool IsPreCollision();
 
+	void AnimationTimer();
 private:
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
@@ -73,13 +74,13 @@ private:
 
 	bool isCollision_ = false;
 
-	Direction direction_ = Direction::kLeft;
+	Direction direction_ = Direction::kRight;
 
 	Direction paths_ = Direction::kNone;
 
-	float kWidth_ = 32.0f;
+	float kWidth_ = 64.0f;
 
-	float kHeight_ = 32.0f;
+	float kHeight_ = 64.0f;
 
 	//アクションゲームで使うステータス
 	//攻撃力
@@ -116,5 +117,13 @@ private:
 	/// 攻撃
 	/// </summary>
 	void Attack();
+
+
+	//画像
+	int playerRightTexture_ = Novice::LoadTexture("./Resources/player_action_right.png");
+	int playerLeftTexture_ = Novice::LoadTexture("./Resources/player_action_left.png");
+	//画像のタイマー
+	float textureTimer_ = 0;
+
 };
 

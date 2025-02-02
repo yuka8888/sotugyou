@@ -40,13 +40,15 @@ public:
 
 	bool IsClear();
 
+	void AnimationTimer();
+
 private:
 	//弾
 	Bullet* bullet_ = nullptr;
 
 	Direction direction_ = Direction::kLeft;
 
-	const float kWidth_ = 32.0f;
+	const float kWidth_ = 64.0f;
 
 	const float kHeight_ = 64.0f;
 
@@ -88,5 +90,9 @@ private:
 	//関数系
 	void Move();
 
-
+	//画像
+	int slimeRightTexture_ = Novice::LoadTexture("./Resources/slime_right.png");
+	int slimeLeftTexture_ = Novice::LoadTexture("./Resources/slime_left.png");
+	//画像のタイマー
+	float textureTimer_ = 0;
 };

@@ -10,7 +10,7 @@ void Player::Initialize()
 {
 	paths_ = Direction::kNone;
 	bullet_ = new Bullet;
-	bullet_->Initialize();
+	bullet_->PlayerInitialize();
 }
 
 void Player::dicePhaseUpdate()
@@ -47,6 +47,7 @@ void Player::ActionGameUpdate()
 
 	Attack();
 
+	AnimationTimer();
 	bullet_->Update();
 
 	aabb_.max = { position_.x + kWidth_ / 2.0f, position_.y + kHeight_ / 2.0f };
@@ -69,6 +70,15 @@ void Player::BossUpdate()
 void Player::Draw()
 {
 	Novice::DrawBox(int(position_.x - kWidth_ / 2.0f), int(position_.y - kHeight_ / 2.0f), (int)kWidth_, (int)kHeight_, 0.0f, BLUE, kFillModeSolid);
+
+	if (direction_ == kRight) {
+		Novice::DrawSpriteRect(int(position_.x - kWidth_ / 2.0f), int(position_.y - kHeight_ / 2.0f), int(kWidth_ * int(textureTimer_ / 30)), 0, 
+			int(kWidth_), int(kHeight_), playerRightTexture_, (kWidth_ / (kWidth_ * 2)), 1.0f, 0.0f, WHITE);
+	}
+	else if (direction_ == kLeft) {
+		Novice::DrawSpriteRect(int(position_.x - kWidth_ / 2.0f), int(position_.y - kHeight_ / 2.0f), int(kWidth_ * int(textureTimer_ / 30)), 0,
+			int(kWidth_), int(kHeight_), playerLeftTexture_, (kWidth_ / (kWidth_ * 2)), 1.0f, 0.0f, WHITE);
+	}
 
 	bullet_->Draw();
 
@@ -158,6 +168,15 @@ void Player::IsCollision(bool isCollision)
 bool Player::IsPreCollision()
 {
 	return isPreCollision_;
+}
+
+void Player::AnimationTimer()
+{
+	//アニメーションタイマー
+	textureTimer_++;
+	if (textureTimer_ >= 60) {
+		textureTimer_ = 0;
+	}
 }
 
 

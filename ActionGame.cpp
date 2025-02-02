@@ -14,6 +14,7 @@ void ActionGame::Initialize()
 	attackTimer_ = 0.0f;
 	bullet_ = new Bullet;
 	bullet_->Initialize();
+	bullet_->SlimeInitialize();
 	isInvincibleTime_ = false;
 	invincibleTimer_ = 0.0f;
 	currentTime_ = (unsigned int)time(nullptr);
@@ -45,6 +46,7 @@ void ActionGame::Update()
 	if (hp_ <= 0) {
 		isClear_ = true;
 	}
+	AnimationTimer();
 }
 
 void ActionGame::Draw()
@@ -57,6 +59,14 @@ void ActionGame::Draw()
 		Novice::DrawBox(int(position_.x - kWidth_ / 2.0f), int(position_.y - kHeight_ / 2.0f), (int)kWidth_, (int)kHeight_, 0.0f, BLACK, kFillModeSolid);
 	}
 
+	if (direction_ == kRight) {
+		Novice::DrawSpriteRect(int(position_.x - kWidth_ / 2.0f), int(position_.y - kHeight_ / 2.0f), int(kWidth_ * int(textureTimer_ / 30)), 0,
+			int(kWidth_), int(kHeight_), slimeRightTexture_, (kWidth_ / (kWidth_ * 4)), 1.0f, 0.0f, WHITE);
+	}
+	else if (direction_ == kLeft) {
+		Novice::DrawSpriteRect(int(position_.x - kWidth_ / 2.0f), int(position_.y - kHeight_ / 2.0f), int(kWidth_ * int(textureTimer_ / 30)), 0,
+			int(kWidth_), int(kHeight_), slimeLeftTexture_, (kWidth_ / (kWidth_ * 4)), 1.0f, 0.0f, WHITE);
+	}
 	bullet_->Draw();
 
 	ImGui::Begin("Enemy");
@@ -133,6 +143,15 @@ void ActionGame::SetPlayerPosition(Vector2 playerPosition)
 bool ActionGame::IsClear()
 {
 	return isClear_;
+}
+
+void ActionGame::AnimationTimer()
+{
+	//アニメーションタイマー
+	textureTimer_++;
+	if (textureTimer_ >= 120) {
+		textureTimer_ = 0;
+	}
 }
 
 void ActionGame::Move()

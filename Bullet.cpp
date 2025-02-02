@@ -14,8 +14,39 @@ void Bullet::Initialize()
 	aabb_.max.y = position_.y + size_.y;
 	aabb_.min.x = position_.x - size_.x;
 	aabb_.min.y = position_.y - size_.y;
+	bulletTexture_= Novice::LoadTexture("./Resources/player_atack1.png");
 }
 
+void Bullet::PlayerInitialize()
+{
+	size_ = { 32.0f, 32.0f };
+	isAttack_ = false;
+	position_ = { 0.0f, 0.0f };
+	direction_ = Direction::kLeft;
+	aabb_.max.x = position_.x + size_.x;
+	aabb_.max.y = position_.y + size_.y;
+	aabb_.min.x = position_.x - size_.x;
+	aabb_.min.y = position_.y - size_.y;
+
+	bulletTexture_= Novice::LoadTexture("./Resources/player_atack1.png");
+}
+
+void Bullet::SlimeInitialize()
+{
+	size_ = { 32.0f, 32.0f };
+	isAttack_ = false;
+	position_ = { 0.0f, 0.0f };
+	direction_ = Direction::kLeft;
+	aabb_.max.x = position_.x + size_.x;
+	aabb_.max.y = position_.y + size_.y;
+	aabb_.min.x = position_.x - size_.x;
+	aabb_.min.y = position_.y - size_.y;
+
+	bulletTexture_ = Novice::LoadTexture("./Resources/slime_atack2.png");
+}
+
+
+	
 void Bullet::Update()
 {
 	velocity_ = {};
@@ -40,6 +71,7 @@ void Bullet::Draw()
 {
 	if (isAttack_) {
 		Novice::DrawEllipse((int)position_.x, (int)position_.y, int(size_.x / 2.0f), int(size_.y / 2.0f), 0.0f, WHITE, kFillModeSolid);
+		Novice::DrawSprite((int)(position_.x - size_.x / 2.0f), (int)(position_.y - size_.y / 2.0f), bulletTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 	}
 }
 
