@@ -33,7 +33,7 @@ void PlayScene::Initialize()
 	downArrowTexture_ = Novice::LoadTexture("./Resources/arrowr3.png");
 	rightArrowTexture_ = Novice::LoadTexture("./Resources/arrowr2.png");
 	gameOverTexture_ = Novice::LoadTexture("./Resources/shooting_bg2.png");
-	aTexture_ = Novice::LoadTexture("./Resources/A.png");
+	aTexture_ = Novice::LoadTexture("./Resources/Sprite-0031.png");
 	attackUpTexture_ = Novice::LoadTexture("./Resources/ATKUPicon.png");
 	puzzle_ = new Puzzle;
 	puzzle_->Initialize();
@@ -165,7 +165,7 @@ void PlayScene::Draw()
 			//背景
 			Novice::DrawSprite(0, 0, backGroundTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 			DrawMap();
-			Novice::DrawSpriteRect(200, 650, 0, 0, 32, 32, aTexture_, 1.0f, 1.0f, 0.0f, WHITE);
+			Novice::DrawSpriteRect(250, 550, 0, 0, 32, 32, aTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 			player_->Draw();
 
 			//ルーレット
