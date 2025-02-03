@@ -119,7 +119,7 @@ private:
 
 	int aTexture_;
 	int attackUpTexture_;
-	
+	int LifeTexture_ = Novice::LoadTexture("./Resources/HPicon.png");
 
 	//関数
 	//マップを描画

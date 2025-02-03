@@ -2,7 +2,6 @@
 #include "mt.h"
 #include "Novice.h"
 #include "time.h"
-#include "imgui.h"
 #include "Bullet.h"
 
 class ActionGame

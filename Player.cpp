@@ -87,8 +87,6 @@ void Player::BossUpdate()
 
 void Player::Draw()
 {
-	Novice::DrawBox(int(position_.x - kWidth_ / 2.0f), int(position_.y - kHeight_ / 2.0f), (int)kWidth_, (int)kHeight_, 0.0f, BLUE, kFillModeSolid);
-
 	if (direction_ == kRight) {
 		Novice::DrawSpriteRect(int(position_.x - kWidth_ / 2.0f), int(position_.y - kHeight_ / 2.0f), int(kWidth_ * int(textureTimer_ / 30)), 0,
 			int(kWidth_), int(kHeight_), playerRightTexture_, (kWidth_ / (kWidth_ * 2)), 1.0f, 0.0f, WHITE);
@@ -101,12 +99,6 @@ void Player::Draw()
 	for (int i = 0; i < kBulletNum; i++) {
 		bullet_[i]->Draw();
 	}
-
-	ImGui::Begin("Player");
-	ImGui::DragInt("Attack", &attack_, 1);
-	ImGui::DragInt("hp", &hp_, 1);
-	ImGui::DragFloat2("position", &position_.x, 0.1f);
-	ImGui::End();
 }
 
 void Player::BossDraw()

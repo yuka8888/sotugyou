@@ -53,13 +53,6 @@ void ActionGame::Update()
 void ActionGame::Draw()
 {
 	Novice::DrawSprite(0, 0, backGroundTexture_, 1.0f, 1.0f, 0.0f, WHITE);
-	//無敵かによって見た目変える
-	if (isInvincibleTime_) {
-		Novice::DrawBox(int(position_.x - kWidth_ / 2.0f), int(position_.y - kHeight_ / 2.0f), (int)kWidth_, (int)kHeight_, 0.0f, RED, kFillModeSolid);
-	}
-	else {
-		Novice::DrawBox(int(position_.x - kWidth_ / 2.0f), int(position_.y - kHeight_ / 2.0f), (int)kWidth_, (int)kHeight_, 0.0f, BLACK, kFillModeSolid);
-	}
 
 	if (direction_ == kRight) {
 		Novice::DrawSpriteRect(int(position_.x - kWidth_ / 2.0f), int(position_.y - kHeight_ / 2.0f), int(kWidth_ * int(textureTimer_ / 30)), 0,
@@ -70,12 +63,6 @@ void ActionGame::Draw()
 			int(kWidth_), int(kHeight_), slimeLeftTexture_, (kWidth_ / (kWidth_ * 4)), 1.0f, 0.0f, WHITE);
 	}
 	bullet_->Draw();
-
-	ImGui::Begin("Enemy");
-	ImGui::DragInt("hp", &hp_, 1);
-	ImGui::DragFloat2("position", &position_.x, 0.1f);
-	ImGui::End();
-
 }
 
 AABB ActionGame::GetAABB()

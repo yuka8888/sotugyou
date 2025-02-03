@@ -184,6 +184,9 @@ void PlayScene::Draw()
 		case Phase::action:
 			actionGame_->Draw();
 			player_->Draw();
+			for (int i = 0; i < player_->GetHp(); i++) {
+				Novice::DrawSprite(i * 70, 5, LifeTexture_, 1.0f, 1.0f, 0.0f, WHITE);
+			}
 
 			break;
 		case Phase::pazzle:
@@ -192,6 +195,10 @@ void PlayScene::Draw()
 			break;
 		case Phase::boss:
 			shooting_->Draw();
+
+			for (int i = 0; i < player_->GetHp(); i++) {
+				Novice::DrawSprite(i * 70, 5, LifeTexture_, 1.0f, 1.0f, 0.0f, WHITE);
+			}
 			break;
 	}
 
@@ -228,12 +235,16 @@ void PlayScene::Action()
 		player_->IsCollision(true);
 	}
 	//ボスとプレイヤーの弾が当たったらダメージ
-	if (isCollision(player_->GetBulletAABB(0), actionGame_->GetAABB()) && !actionGame_->IsPreCollision()) {
-		actionGame_->SetHp(actionGame_->GetHp() - player_->GetAttack());
-		actionGame_->IsCollision(true);
-	}
-	else if (isCollision(player_->GetBulletAABB(0), actionGame_->GetAABB())) {
-		actionGame_->IsCollision(true);
+	for (int i = 0; i < player_->GetBulletNum(); i++) {
+		if (player_->IsBulletDraw(i)) {
+			if (isCollision(player_->GetBulletAABB(i), actionGame_->GetAABB()) && !actionGame_->IsPreCollision()) {
+				actionGame_->SetHp(actionGame_->GetHp() - player_->GetAttack());
+				actionGame_->IsCollision(true);
+			}
+			else if (isCollision(player_->GetBulletAABB(i), actionGame_->GetAABB())) {
+				actionGame_->IsCollision(true);
+			}
+		}
 	}
 
 }
