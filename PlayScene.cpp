@@ -32,7 +32,7 @@ void PlayScene::Initialize()
 	upArrowTexture_ = Novice::LoadTexture("./Resources/arrow.png");
 	downArrowTexture_ = Novice::LoadTexture("./Resources/arrowr3.png");
 	rightArrowTexture_ = Novice::LoadTexture("./Resources/arrowr2.png");
-
+	gameOverTexture_ = Novice::LoadTexture("./Resources/shooting_bg2.png");
 	puzzle_ = new Puzzle;
 	puzzle_->Initialize();
 
@@ -112,6 +112,26 @@ void PlayScene::Update()
 			break;
 		case Phase::boss:
 			shooting_->Update();
+
+			if (shooting_->IsClear() && fade_->IsFinished() && !(fade_->GetStatus() == Fade::Status::FadeOut)) {
+				fade_->Start(Fade::Status::FadeOut, 1.0f);
+			}
+
+			if (shooting_->IsClear() && (fade_->GetStatus() == Fade::Status::FadeOut) && (fade_->IsFinished() == true)) {
+				sceneNo = kClear;
+			}
+
+			if (shooting_->IsGameOver() && fade_->IsFinished() && !(fade_->GetStatus() == Fade::Status::FadeOut)) {
+				isGameOver = true;
+			}
+
+			if (isGameOver && keys[DIK_SPACE] && !(fade_->GetStatus() == Fade::Status::FadeOut)) {
+				fade_->Start(Fade::Status::FadeOut, 1.0f);
+			}
+			if (isGameOver && (fade_->GetStatus() == Fade::Status::FadeOut) && (fade_->IsFinished() == true)) {
+				sceneNo = kTitle;
+			}
+
 			break;
 
 	}
@@ -160,7 +180,9 @@ void PlayScene::Draw()
 			break;
 	}
 
-
+	if (isGameOver) {
+		Novice::DrawSprite(0.0f, 0.0f, gameOverTexture_, 1.0f, 1.0f, 0.0f, WHITE);
+	}
 	fade_->Draw();
 
 }

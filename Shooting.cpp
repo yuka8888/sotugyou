@@ -8,6 +8,7 @@ Shooting::~Shooting()
 	for (int i = 0; i < kEnemyNum; i++) {
 		delete enemy_[i];
 	}
+
 }
 
 void Shooting::Initialize()
@@ -22,10 +23,21 @@ void Shooting::Initialize()
 		enemy_[i] = new Enemy;
 		enemy_[i]->Initialize();
 	}
+	backGroundTexture_ = Novice::LoadTexture("./Resources/shooting_bg.png");
+
 }
 
 void Shooting::Update()
 {
+	bgPosition.x -= 1.0f;
+	bgPosition2.x -= 1.0f;
+
+	if (bgPosition.x <= -1280.0f) {
+		bgPosition.x = 1280;
+	}
+	if (bgPosition2.x <= -1280.0f) {
+		bgPosition2.x = 1280;
+	}
 	spawnTimer += 0.01f;
 
 	player_->BossUpdate();
@@ -69,6 +81,9 @@ void Shooting::Update()
 
 void Shooting::Draw()
 {
+	Novice::DrawSprite((int)bgPosition.x, (int)bgPosition.y, backGroundTexture_, 1.0f, 1.0f, 0.0f, WHITE);
+	Novice::DrawSprite((int)bgPosition2.x, (int)bgPosition2.y, backGroundTexture_, 1.0f, 1.0f, 0.0f, WHITE);
+	
 	player_->BossDraw();
 
 	for (int i = 0; i < kEnemyNum; i++) {

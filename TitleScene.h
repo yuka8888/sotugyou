@@ -33,4 +33,6 @@ private:
 
 	//終了フラグ
 	bool finished_ = false;
+
+	int backGroundTexture_;
 };

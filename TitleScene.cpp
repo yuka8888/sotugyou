@@ -12,6 +12,8 @@ void TitleScene::Initialize()
 	fade_->Initialize();
 
 	fade_->Start(Fade::Status::FadeIn, 1.0f);
+
+	backGroundTexture_ = Novice::LoadTexture("./Resources/Title.png");
 }
 
 void TitleScene::Update()
@@ -30,7 +32,7 @@ void TitleScene::Update()
 
 void TitleScene::Draw()
 {
-	Novice::DrawBox(0, 0, 1280, 720, 0.0f, BLUE, kFillModeSolid);
+	Novice::DrawSprite(0, 0, backGroundTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 
 	fade_->Draw();
 }

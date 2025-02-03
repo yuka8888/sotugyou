@@ -95,4 +95,5 @@ private:
 	int slimeLeftTexture_ = Novice::LoadTexture("./Resources/slime_left.png");
 	//画像のタイマー
 	float textureTimer_ = 0;
+	int backGroundTexture_;
 };

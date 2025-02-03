@@ -21,5 +21,5 @@ private:
 	int kHeight_ = 360;
 	int kMostPos_ = 1280;
 	Vector2 kBackPos_ = { 640.0f , 355.0f };
-
+	int backGroundTexture_;
 };

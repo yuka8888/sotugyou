@@ -11,6 +11,8 @@ void ClearScene::Initialize()
 	fade_ = new Fade;
 	fade_->Initialize();
 	fade_->Start(Fade::Status::FadeIn, 1.0f);
+	backGroundTexture_ = Novice::LoadTexture("./Resources/GameClear.png");
+	
 }
 
 void ClearScene::Update()

@@ -40,5 +40,10 @@ private:
 	bool isGameOver_ = false;
 
 	void Collision();
+
+	Vector2 bgPosition = {};
+	Vector2 bgPosition2 = {1280.0f, 0};
+
+	int backGroundTexture_;
 };
 

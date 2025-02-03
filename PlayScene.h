@@ -95,6 +95,8 @@ private:
 
 	bool isGoal = false;
 
+	bool isGameOver = false;
+
 	//テクスチャ
 	int startBlockTexture_;
 	int goalBlockTexture_;
@@ -108,6 +110,8 @@ private:
 
 	int rouletteTexture_[7];
 	int backGroundTexture_;
+
+	int gameOverTexture_;
 
 	//関数
 	//マップを描画
