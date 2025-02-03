@@ -24,7 +24,7 @@ void Shooting::Initialize()
 		enemy_[i]->Initialize();
 	}
 	backGroundTexture_ = Novice::LoadTexture("./Resources/shooting_bg.png");
-
+	exTexture_ = Novice::LoadTexture("./Resources/shooting.png");
 }
 
 void Shooting::Update()
@@ -83,6 +83,7 @@ void Shooting::Draw()
 {
 	Novice::DrawSprite((int)bgPosition.x, (int)bgPosition.y, backGroundTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 	Novice::DrawSprite((int)bgPosition2.x, (int)bgPosition2.y, backGroundTexture_, 1.0f, 1.0f, 0.0f, WHITE);
+	Novice::DrawSprite(0, 0, exTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 	
 	player_->BossDraw();
 

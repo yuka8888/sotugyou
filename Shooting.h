@@ -45,5 +45,6 @@ private:
 	Vector2 bgPosition2 = {1280.0f, 0};
 
 	int backGroundTexture_;
+	int exTexture_;
 };
 

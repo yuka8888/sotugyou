@@ -33,6 +33,8 @@ void PlayScene::Initialize()
 	downArrowTexture_ = Novice::LoadTexture("./Resources/arrowr3.png");
 	rightArrowTexture_ = Novice::LoadTexture("./Resources/arrowr2.png");
 	gameOverTexture_ = Novice::LoadTexture("./Resources/shooting_bg2.png");
+	aTexture_ = Novice::LoadTexture("./Resources/A.png");
+	attackUpTexture_ = Novice::LoadTexture("./Resources/ATKUPicon.png");
 	puzzle_ = new Puzzle;
 	puzzle_->Initialize();
 
@@ -98,6 +100,14 @@ void PlayScene::Update()
 
 			player_->dicePhaseUpdate();
 
+			if (timer >= 1.0f && isClear) {
+				isClear = false;
+				timer = 0.0f;
+			}
+			else if (isClear) {
+				timer += 0.01f;
+			}
+
 			break;
 
 		case Phase::action:
@@ -155,6 +165,7 @@ void PlayScene::Draw()
 			//背景
 			Novice::DrawSprite(0, 0, backGroundTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 			DrawMap();
+			Novice::DrawSpriteRect(200, 650, 0, 0, 32, 32, aTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 			player_->Draw();
 
 			//ルーレット
@@ -165,6 +176,10 @@ void PlayScene::Draw()
 				Novice::DrawSprite(100, 550, rouletteTexture_[dice], 1.0f, 1.0f, 0.0f, WHITE);
 			}
 			ImGui::InputInt("dice", &dice);
+
+			if (isClear) {
+				Novice::DrawSprite(1280 / 2 - 96, 720 / 2 - 96, attackUpTexture_, 1.0f, 1.0f, 0.0f, WHITE);
+			}
 			break;
 		case Phase::action:
 			actionGame_->Draw();
@@ -181,7 +196,7 @@ void PlayScene::Draw()
 	}
 
 	if (isGameOver) {
-		Novice::DrawSprite(0.0f, 0.0f, gameOverTexture_, 1.0f, 1.0f, 0.0f, WHITE);
+		Novice::DrawSprite(0, 0, gameOverTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 	}
 	fade_->Draw();
 
@@ -503,6 +518,7 @@ void PlayScene::ChangePhase()
 			//アクションをクリアしたか
 			if (actionGame_->IsClear() && fade_->GetStatus() != Fade::Status::FadeOut) {
 				fade_->Start(Fade::Status::FadeOut, 1.0f);
+				isClear = true;
 
 				//ランダムにステータス強化
 				player_->SetAttackUpNum_(player_->GetAttackUpNum_() + 1);
@@ -531,6 +547,7 @@ void PlayScene::ChangePhase()
 			//パズルをクリアしたか
 			if (puzzle_->IsClear() && fade_->GetStatus() != Fade::Status::FadeOut) {
 				fade_->Start(Fade::Status::FadeOut, 1.0f);
+				isClear = true;
 
 				//ランダムにステータス強化
 				player_->SetAttackUpNum_(player_->GetAttackUpNum_() + 1);

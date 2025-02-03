@@ -95,7 +95,11 @@ private:
 
 	bool isGoal = false;
 
+	bool isClear = false;
+
 	bool isGameOver = false;
+
+	float timer = 0.0f;
 
 	//テクスチャ
 	int startBlockTexture_;
@@ -112,6 +116,10 @@ private:
 	int backGroundTexture_;
 
 	int gameOverTexture_;
+
+	int aTexture_;
+	int attackUpTexture_;
+	
 
 	//関数
 	//マップを描画

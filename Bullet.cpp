@@ -28,7 +28,7 @@ void Bullet::PlayerInitialize()
 	aabb_.min.x = position_.x - size_.x;
 	aabb_.min.y = position_.y - size_.y;
 
-	bulletTexture_= Novice::LoadTexture("./Resources/player_atack1.png");
+	bulletTexture_= Novice::LoadTexture("./Resources/player_shooting_bullet2.png");
 }
 
 void Bullet::BossInitialize()
