@@ -175,7 +175,6 @@ void PlayScene::Draw()
 			else {
 				Novice::DrawSprite(100, 550, rouletteTexture_[dice], 1.0f, 1.0f, 0.0f, WHITE);
 			}
-			ImGui::InputInt("dice", &dice);
 
 			if (isClear) {
 				Novice::DrawSprite(1280 / 2 - 96, 720 / 2 - 96, attackUpTexture_, 1.0f, 1.0f, 0.0f, WHITE);

@@ -2,7 +2,6 @@
 #include "mt.h"
 #include "Novice.h"
 #include"Bullet.h"
-#include "imgui.h"
 
 class Boss
 {

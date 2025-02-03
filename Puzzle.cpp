@@ -21,7 +21,7 @@ void Puzzle::Draw()
 {
 	//背景描画
 	Novice::DrawSprite(0, 0, bgTexture_, 1.0f, 1.0f, 0.0f, WHITE);
-	Novice::DrawSprite(0, 0,manualTexture_, 1.0f, 1.0f, 0.0f, WHITE);
+	Novice::DrawSprite(0, 0, manualTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 	Novice::DrawSprite(800, 0, puzzle_exTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 
 	//お手本描画
@@ -59,11 +59,7 @@ void Puzzle::Draw()
 	//選択のフレーム描画
 	Novice::DrawSprite(int(changePuzzlePos_.x + textureSize_ * selectPosX_), int(changePuzzlePos_.y + textureSize_ * selectPosY_), frameTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 
-	Novice::ScreenPrintf(10, 10, "%d", isClear_);
-	Novice::ScreenPrintf(10, 30, "%d", isGameOver_);
-	Novice::ScreenPrintf(10, 60, "%d", actNum_);
 }
-
 bool Puzzle::IsClear()
 {
 	return isClear_;

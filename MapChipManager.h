@@ -3,7 +3,6 @@
 #include "string"
 #include "assert.h"
 #include "mt.h"
-#include "imgui.h"
 
 struct MapChipData {
 	std::vector<std::vector<MapChipType>> data;

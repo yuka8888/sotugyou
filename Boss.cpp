@@ -51,7 +51,6 @@ void Boss::Draw()
 		Novice::DrawSprite(int(position_.x - size_.x / 2.0f), int(position_.y - size_.y / 2.0f), bossTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 	}
 
-	ImGui::InputInt("bossHp", &hp_, 1);
 }
 
 void Boss::SetHp(int hp)

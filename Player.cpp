@@ -109,7 +109,6 @@ void Player::BossDraw()
 
 	Novice::DrawSprite(int(position_.x - kWidth_ / 2.0f), int(position_.y - kHeight_ / 2.0f), playerShootingTexture_, 1.0f, 1.0f, 0.0f, WHITE);
 
-	ImGui::InputInt("PlayerHp", &hp_, 1);
 }
 
 void Player::SetPosition(Vector2 translation)
